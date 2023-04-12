@@ -1,0 +1,99 @@
+<% layout('layouts/boilerplate') %>
+
+<h1>Welcome to view <%= parkingLot.name %></h1>
+
+<img src="<%= parkingLot.pictureLink %>" alt="Parking Lot Photo" width="600px">
+
+<h4>Listed by <%= (parkingLot.owner) ? parkingLot.owner.username : 'N/A' %></h4>
+
+<select name="" id="">
+    <% for(let pricePair of parkingLot.priceTable) { %>
+
+    <option value="">
+        <%= pricePair.start %> - <%= pricePair.end %> ₺ <%= pricePair.price %>
+    </option>
+    <% } %>
+</select>
+
+<p>Listed since <%= new Date(parkingLot.createdAt).toDateString() %> </p>
+
+<% for(let floor of parkingLot.floors) { %>
+<h4>Slots for floor #<%= floor.floorNum %>:</h4>
+<table>
+    <thead>
+        <tr>
+            <th>Availability</th>
+            <th>Occupied By</th>
+            <th>Floor Number</th>
+            <th>Located At</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <% for(let slot of floor.slots) { %>
+        <tr>
+            <th><%= slot.isFull %></th>
+            <th><%= slot.occupierCar %></th>
+            <th><%= slot.floorNum %></th>
+            <th><%= slot.locatedAt.location %></th>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
+<br>
+<% } %>
+
+<a href="/parkingLots/<%= parkingLot._id %>/edit">
+    <button class="btn btn-info">Edit</button>
+</a>
+
+<h4>Reviews:</h4>
+<% for(let review of parkingLot.reviews) { %>
+<h6>Submitted by <%= review.author %></h6>
+<h4>Title: <%= review.title %> Rating: <%= review.rating %></h4>
+<p>Body: <%= review.body %></p>
+<p>Votes: <%= review.votes %></p>
+
+<form action="/parkingLots/<%= parkingLot._id %>/reviews/<%= review._id %>?_method=DELETE" method="post">
+    <button class="btn btn-danger">Delete</button>
+</form>
+
+<button class='btn btn-info btn-edit'>Edit</button>
+<% } %>
+
+<form action="/parkingLots/<%= parkingLot._id %>/reviews" method="post">
+    <h2>Make a review</h2>
+
+    <label for="rating">Rating:</label>
+    <input type="range" name="review[rating]" id="rating" min="1" max="5">
+    <br>
+
+    <label for="title">Title:</label>
+    <input type="text" name="review[title]" id="title">
+
+    <label for="body">Review:</label>
+    <textarea name="review[body]" id="body" cols="40" rows="3"></textarea>
+
+    <button class="btn btn-success">Submit</button>
+</form>
+
+<form action="/parkingLots/<%= parkingLot._id %>?_method=DELETE" method="post">
+    <button class="btn btn-danger">Delete</button>
+</form>
+
+<style>
+    th,
+    td {
+        border: 1px solid black;
+        width: 100px;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    td {
+        padding-left: 9px;
+    }
+</style>

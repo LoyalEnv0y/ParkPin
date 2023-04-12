@@ -1,0 +1,57 @@
+<% layout('layouts/boilerplate') %>
+
+<% let selectedCity = null %>
+
+<div class="row">
+    <h1 class='text-center'>Register a New Parking Lot!</h1>
+
+    <div class="col-6 offset-3">
+        <form action="/parkingLots/<%= parkingLot._id %>?_method=PUT" method="POST">
+            <div class="mb-3">
+                <label class="form-label" for="title">Title</label>
+                <input class="form-control" type="text" id="title" name="parkingLot[name]"
+                    value="<%= parkingLot.name %>" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="city">City</label>
+                <select class="form-control" type="text" id="city" name="parkingLot[city]" required>
+                    <% for(let city in cities) { %>
+                    <option value="<%= city %>" <%= city === oldCity ? 'selected' : '' %>> <%= city %>
+                    </option>
+                    <% } %>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="province">Province</label>
+                <select class="form-control" type="text" id="province" name="parkingLot[province]" required>
+                    <% for(let province of cities[oldCity]) { %>
+                    <option value="<%= province %>" <%= province === oldProvince ? 'selected' : '' %>><%= province %>
+                    </option>
+                    <% } %>
+                </select>
+            </div>
+
+            <!-- <div class="mb-3">
+                <label class="form-label" for="image">Images</label>
+                <input class="form-control" type="file" id="image" name="image" required multiple>
+                <div class="valid-feedback">Looks good!</div>
+            </div>  -->
+
+            <div class="mb-3">
+                <label class="form-label" for="image">Image URL</label>
+                <input class="form-control" type="text" id="image" name="parkingLot[pictureLink]"
+                    value="<%= parkingLot.pictureLink %>" required>
+            </div>
+
+            <div class="mb-3">
+                <button class="btn btn-primary">Update Campground</button>
+            </div>
+        </form>
+
+        <a href="/campgrounds">All Campgrounds</a>
+    </div>
+</div>
+
+<script src="/js/DynamicCitySelect.js" type="module"></script>
