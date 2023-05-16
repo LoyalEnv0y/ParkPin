@@ -18,3 +18,19 @@ module.exports.reviewSchema = Joi.object({
 		body: Joi.string().required()
 	}).required()
 });
+
+const currentDate = new Date();
+const highDateLimit = new Date().setFullYear(currentDate.getFullYear() - 18);
+const lowDateLimit = new Date().setFullYear(currentDate.getFullYear() - 80);
+
+module.exports.userSchema = Joi.object({
+	user: Joi.object({
+		username: Joi.string().required(),
+		email: Joi.string().required(),
+		password: Joi.string().required(),
+		birthDate: Joi.date().less(highDateLimit).greater(lowDateLimit).required(),
+		profilePicLink: Joi.string().required(),
+		phoneNumber: Joi.string().required(),
+		citizenID: Joi.string().required(),
+	}).required()
+});

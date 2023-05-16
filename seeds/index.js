@@ -163,7 +163,7 @@ const resetParkingLots = async () => {
         })
 
         // Assign the lot to testUser but saves the user only after the slot has been saved
-        testUser.ParkingLots.push(newLot._id);
+        testUser.parkingLots.push(newLot._id);
 
         // Create random number of floors and assign them to the new parking lot
         newLot.floors = await createRandomFloors(getRandNum(5, 1), newLot);

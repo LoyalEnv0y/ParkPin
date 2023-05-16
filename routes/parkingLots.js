@@ -13,6 +13,8 @@ const AppError = require('../utils/AppError');
 
 const {parkingLotSchema: parkingLotJOI} = require('../utils/JoiSchemas');
 
+const {isLoggedIn} = require('../middleware');
+
 /*
 If there are any floors with the same number as the user inputted, 
 this function will delete the floor with that number so that the floor
@@ -151,7 +153,7 @@ router.get('/', catchAsync(async (req, res) => {
 	res.render('parkingLots/index', { title: 'ParkPin | All', ParkingLots: allParkingLots });
 }));
 
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
 	res.render('parkingLots/new', {
 		title: 'ParkPin | New',
 		cities: CitiesAndProvinces
@@ -173,7 +175,7 @@ router.get('/:id', catchAsync(async (req, res) => {
 	});
 }));
 
-router.get('/:id/edit', catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
 	const foundParkingLot = await ParkingLot.findById(req.params.id);
 	const [oldCity, oldProvince] = foundParkingLot.location.split(' - ');
 
@@ -186,7 +188,7 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
 	});
 }));
 
-router.post('/', validateParkingLot, catchAsync(async (req, res) => {
+router.post('/', isLoggedIn, validateParkingLot, catchAsync(async (req, res) => {
 	const parkingLot = req.body.parkingLot;
 	if (!parkingLot) throw new AppError('Invalid form data', 400);
 
@@ -207,7 +209,7 @@ router.post('/', validateParkingLot, catchAsync(async (req, res) => {
 	res.redirect(`/parkingLots/${newLot._id}`);
 }));
 
-router.put('/:id', validateParkingLot, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, validateParkingLot, catchAsync(async (req, res) => {
 	const { id } = req.params;
 	const foundParkingLot = await ParkingLot.findById(id);
 	const updatedLot = req.body.parkingLot;
@@ -222,7 +224,7 @@ router.put('/:id', validateParkingLot, catchAsync(async (req, res) => {
 	res.redirect(`/parkingLots/${id}`);
 }));
 
-router.delete('/:id', catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
 	await ParkingLot.findByIdAndDelete(req.params.id);
 
 	req.flash('success', 'Successfully deleted the parking lot!');

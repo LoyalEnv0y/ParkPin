@@ -2,17 +2,17 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const carsSchema = new Schema({
-    Brand: {
+    brand: {
         type: String,
         required: true,
     },
 
-    Model: {
+    model: {
         type: String,
         required: true,
     },
 
-    Type: {
+    type: {
         type: String,
         enum: ['SUV',
             'Hatchback',
@@ -31,22 +31,22 @@ const carsSchema = new Schema({
         required: true
     },
 
-    ListedAt: {
+    listedAt: {
         type: Date,
         default: Date.now(),
     },
 
-    Owner: {
+    owner: {
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
 
-    ParkedIn: {
+    parkedIn: {
         type: Schema.Types.ObjectId,
         ref: 'ParkingLot',
     },
 
-    ParkedAt: {
+    parkedAt: {
         type: Date,
     }
 });

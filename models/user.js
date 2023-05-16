@@ -4,9 +4,37 @@ const Car = require('./car');
 const ParkingLot = require('./parkingLot');
 
 const passportLocalMongoose = require('passport-local-mongoose');
+const { userSchema } = require('../utils/JoiSchemas');
 
 const UserSchema = new Schema({
+    username: {
+        type: String,
+        required: true,
+        unique: true
+    },
+
     email: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+
+    birthDate: {
+        type: Date,
+        required: true
+    },
+
+    profilePicLink: {
+        type: String
+    },
+
+    phoneNumber: {
+        type: String,
+        required: true,
+        unique: true
+    },
+
+    citizenID: {
         type: String,
         required: true,
         unique: true
@@ -17,11 +45,6 @@ const UserSchema = new Schema({
         default: Date.now(),
     },
 
-    birthDate: {
-        type: Date,
-        required: true
-    },
-
     cars: [
         {
             type: Schema.Types.ObjectId,
@@ -29,16 +52,12 @@ const UserSchema = new Schema({
         }
     ],
 
-    ParkingLots: [
+    parkingLots: [
         {
             type: Schema.Types.ObjectId,
             ref: 'ParkingLot'
         }
     ],
-
-    ProfilePicLink: {
-        type: String
-    }
 });
 
 UserSchema.plugin(passportLocalMongoose);
