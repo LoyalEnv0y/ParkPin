@@ -14,7 +14,7 @@
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^8.0.0"
   },
-  "name": "yelppark",
+  "name": "parkpin",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
