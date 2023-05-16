@@ -5,8 +5,20 @@ const ParkingLot = require('../models/parkingLot');
 const Review = require('../models/review');
 
 const catchAsync = require('../utils/catchAsync');
+const {reviewSchema: reviewJOI} = require('../utils/JoiSchemas');
+const AppError = require('../utils/AppError');
 
-router.post('/', catchAsync(async (req, res) => {
+const validateReview = (req, res, next) => {
+	const { error } = reviewJOI.validate(req.body);
+	if (error) {
+		const msg = error.details.map(el => el.message).join(',');
+		throw new AppError(msg, 400);
+	} else {
+		next();
+	}
+}
+
+router.post('/', validateReview, catchAsync(async (req, res) => {
     const id = req.params.id;
     const review = req.body.review;
     const foundParkingLot = await ParkingLot.findById(id);
@@ -23,7 +35,7 @@ router.post('/', catchAsync(async (req, res) => {
     await foundParkingLot.save();
 
     req.flash('success', 'Created a new review!');
-    res.redirect(`/parkingLots/${id}`);
+    res.redirect(`/parkingLots/${id}#comments`);
 }));
 
 router.delete('/:reviewId', catchAsync(async (req, res) => {
@@ -33,7 +45,7 @@ router.delete('/:reviewId', catchAsync(async (req, res) => {
     await Review.findByIdAndDelete(reviewId);
 
     req.flash('success', 'Deleted the review!');
-    res.redirect(`/parkingLots/${id}`)
+    res.redirect(`/parkingLots/${id}#comments`)
 }));
 
 module.exports = router;

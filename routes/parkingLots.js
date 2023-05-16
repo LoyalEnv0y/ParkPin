@@ -131,6 +131,9 @@ const parseAndCreateHourPricePairs = async (data, parkingLot) => {
 	return await Promise.all(priceTables);
 }
 
+/*
+Check if the data is valid with JOI
+*/
 const validateParkingLot = (req, res, next) => {
 	const { error } = parkingLotJOI.validate(req.body);
 	if (error) {

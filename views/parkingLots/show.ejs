@@ -48,7 +48,7 @@
     <button class="btn btn-info">Edit</button>
 </a>
 
-<h4>Reviews:</h4>
+<h4 id="comments">Reviews:</h4>
 <% for(let review of parkingLot.reviews) { %>
 <h6>Submitted by <%= review.author %></h6>
 <h4>Title: <%= review.title %> Rating: <%= review.rating %></h4>
@@ -58,11 +58,9 @@
 <form action="/parkingLots/<%= parkingLot._id %>/reviews/<%= review._id %>?_method=DELETE" method="post">
     <button class="btn btn-danger">Delete</button>
 </form>
-
-<button class='btn btn-info btn-edit'>Edit</button>
 <% } %>
 
-<form action="/parkingLots/<%= parkingLot._id %>/reviews" method="post">
+<form action="/parkingLots/<%= parkingLot._id %>/reviews" method="post" novalidate class="validated-form col-3">
     <h2>Make a review</h2>
 
     <label for="rating">Rating:</label>
@@ -70,10 +68,10 @@
     <br>
 
     <label for="title">Title:</label>
-    <input type="text" name="review[title]" id="title">
+    <input class="form-control" type="text" name="review[title]" id="title" required>
 
     <label for="body">Review:</label>
-    <textarea name="review[body]" id="body" cols="40" rows="3"></textarea>
+    <textarea class="form-control mb-4" name="review[body]" id="body" required></textarea>
 
     <button class="btn btn-success">Submit</button>
 </form>

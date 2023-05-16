@@ -10,3 +10,11 @@ module.exports.parkingLotSchema = Joi.object({
 		priceTable: Joi.string().regex(/^\s*\d+\s*-\s*\d+\s*=\s*\d+\s*$/)
 	}).required(),
 });
+
+module.exports.reviewSchema = Joi.object({
+	review: Joi.object({
+		rating: Joi.number().min(1).max(5).required(),
+		title: Joi.string().required(),
+		body: Joi.string().required()
+	}).required()
+});
