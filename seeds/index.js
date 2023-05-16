@@ -41,6 +41,8 @@ const resetUsers = async () => {
     // Create a new user
     const newUser = new User({
         username: 'Tester',
+        password: '123',
+        email: 'test@gmail.com',
         birthDate: '01-01-2000'
     });
 
@@ -145,7 +147,7 @@ const resetParkingLots = async () => {
     await Review.deleteMany();
 
     // Create new lots 
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 3; i++) {
         // Get new lot's data
         const randCity = getSampleFromData(Object.keys(CitiesAndProvinces));
         const randProvince = getSampleFromData(CitiesAndProvinces[randCity]);

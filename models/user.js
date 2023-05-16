@@ -3,11 +3,13 @@ const Schema = mongoose.Schema;
 const Car = require('./car');
 const ParkingLot = require('./parkingLot');
 
-const usersSchema = new Schema({
-    username: {
+const passportLocalMongoose = require('passport-local-mongoose');
+
+const UserSchema = new Schema({
+    email: {
         type: String,
         required: true,
-        unique: true,
+        unique: true
     },
 
     createdAt: {
@@ -39,4 +41,6 @@ const usersSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('User', usersSchema);
+UserSchema.plugin(passportLocalMongoose);
+
+module.exports = mongoose.model('User', UserSchema);

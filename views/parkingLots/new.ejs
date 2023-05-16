@@ -4,7 +4,7 @@
     <h1 class='text-center'>Register a New Parking Lot!</h1>
 
     <div class="col-6 offset-3">
-        <form action="/parkingLots" method="POST">
+        <form action="/parkingLots" method="POST" novalidate class="validated-form">
             <div class="mb-3">
                 <label class="form-label" for="title">Title</label>
                 <input class="form-control" type="text" id="title" name="parkingLot[name]" required>
@@ -42,13 +42,15 @@
             <div class="mb-3">
                 <label class="form-label" for="floors">Floor Number - Slot Count</label>
                 <textarea class="form-control" name="parkingLot[floors]" id="floors"
-                    placeholder="Please write the floors as <FloorNumber> - <SlotNumber> and separate with a comma. For example 1 - 20, 2 - 21, 3 - 25"></textarea>
+                    placeholder="Please write the floors as <FloorNumber> - <SlotNumber> and separate with a comma. For example 1 - 20, 2 - 21, 3 - 25"
+                    required></textarea>
             </div>
 
             <div class="mb-3">
                 <label class="form-label" for="priceTable">Price Table</label>
                 <textarea class="form-control" name="parkingLot[priceTable]" id="priceTable"
-                    placeholder="Please write your pricing as <StartingHour> - <EndingHour> = <Price> separate with comma and if you have prices based on days set the starting hour to 0 and ending hour to 24 or 48 etc. For example 0 - 2 = 20, 2 - 4 = 25, 0 - 24 = 100"></textarea>
+                    placeholder="Please write your pricing as <StartingHour> - <EndingHour> = <Price> separate with comma and if you have prices based on days set the starting hour to 0 and ending hour to 24 or 48 etc. For example 0 - 2 = 20, 2 - 4 = 25, 0 - 24 = 100"
+                    required></textarea>
             </div>
 
             <div class="mb-3">

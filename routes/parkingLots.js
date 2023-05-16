@@ -8,9 +8,17 @@ const HourPricePair = require('../models/hourPricePair')
 const Floor = require('../models/floor');
 const Slot = require('../models/slot');
 
-const handleDuplicateFloors = async (newFloorNum, oldFloors) => {
-	if (oldFloors.length < 1) return;
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/AppError');
 
+const {parkingLotSchema: parkingLotJOI} = require('../utils/JoiSchemas');
+
+/*
+If there are any floors with the same number as the user inputted, 
+this function will delete the floor with that number so that the floor
+with the same number can be registered elsewhere.
+*/
+const handleDuplicateFloors = async (newFloorNum, oldFloors) => {
 	for (let floor of oldFloors) {
 		if (floor.floorNum == newFloorNum) {
 			await Floor.findByIdAndDelete(floor._id);
@@ -18,13 +26,17 @@ const handleDuplicateFloors = async (newFloorNum, oldFloors) => {
 	}
 }
 
+/*
+Takes data from the user input and normalizes it to some capacity. 
+Calls createFloor() function to fill the floors and returns them.
+*/
 const parseAndCreateFloors = async (data, parkingLot) => {
 	const floors = [];
 	const chunks = data.split(',');
 
 	for (let i = 0; i < chunks.length; i++) {
 		let chunk = chunks[i];
-		chunk = chunk.replace(/\s+/g, '');
+		chunk = chunk.replace(/\s+/g, '');  
 
 		const pair = chunk.split('-');
 		const createdFloor = await createFloor(pair[0], pair[1], parkingLot);
@@ -37,6 +49,10 @@ const parseAndCreateFloors = async (data, parkingLot) => {
 	return floors;
 }
 
+/*
+Creates and returns a new floor with the given data.
+Calls createSlots() function to fill in the slots of those floors.
+*/
 const createFloor = async (floorNum, slotCount, parkingLot) => {
 	const newFloor = new Floor({
 		slots: await createSlots(slotCount, floorNum, parkingLot),
@@ -48,6 +64,9 @@ const createFloor = async (floorNum, slotCount, parkingLot) => {
 	return newFloor;
 }
 
+/*
+Creates and returns an array of new slots with the given data.
+*/
 const createSlots = async (slotCount, floorNum, parkingLot) => {
 	const createdSlots = [];
 
@@ -64,18 +83,27 @@ const createSlots = async (slotCount, floorNum, parkingLot) => {
 	return await Promise.all(createdSlots);
 }
 
+/*
+If there are any pricePairs with the same start or end value, this
+function will delete the pair with that start or end value so that
+the pair with the same values can be registered elsewhere.
+*/
 const handleDuplicateHourPricePairs = async (newPair, parkingLot) => {
 	const currentTable = parkingLot.priceTable
 
-	if (currentTable.length < 1) return;
-
 	for (let pricePair of currentTable) {
-		if (pricePair.start == newPair.start && pricePair.end == newPair.end) {
+		if (pricePair.start == newPair.start || pricePair.end == newPair.end) {
 			await HourPricePair.findByIdAndDelete(pricePair._id);
 		}
 	}
 }
 
+/*
+Separates the data taken by the user to chunks and for each chunk,
+creates a new pricePair. It then calls handleDuplicateHourPricePairs()
+to remove any old pricePairs with the same values. Finally saves the 
+pairs and returns them.
+*/
 const parseAndCreateHourPricePairs = async (data, parkingLot) => {
 	const priceTables = [];
 	const chunks = data.split(',');
@@ -103,12 +131,22 @@ const parseAndCreateHourPricePairs = async (data, parkingLot) => {
 	return await Promise.all(priceTables);
 }
 
-router.get('/', async (req, res) => {
+const validateParkingLot = (req, res, next) => {
+	const { error } = parkingLotJOI.validate(req.body);
+	if (error) {
+		const msg = error.details.map(el => el.message).join(',');
+		throw new AppError(msg, 400);
+	} else {
+		next();
+	}
+}
+
+router.get('/', catchAsync(async (req, res) => {
 	const allParkingLots = await ParkingLot.find({})
 		.populate('owner');
 
 	res.render('parkingLots/index', { title: 'ParkPin | All', ParkingLots: allParkingLots });
-});
+}));
 
 router.get('/new', (req, res) => {
 	res.render('parkingLots/new', {
@@ -117,7 +155,7 @@ router.get('/new', (req, res) => {
 	});
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', catchAsync(async (req, res) => {
 	const { id } = req.params;
 
 	const foundParkingLot = await ParkingLot.findById(id)
@@ -130,9 +168,9 @@ router.get('/:id', async (req, res) => {
 		title: `ParkPin | ${foundParkingLot.location}`,
 		parkingLot: foundParkingLot
 	});
-});
+}));
 
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', catchAsync(async (req, res) => {
 	const foundParkingLot = await ParkingLot.findById(req.params.id);
 	const [oldCity, oldProvince] = foundParkingLot.location.split(' - ');
 
@@ -143,10 +181,12 @@ router.get('/:id/edit', async (req, res) => {
 		oldCity,
 		oldProvince
 	});
-});
+}));
 
-router.post('/', async (req, res) => {
+router.post('/', validateParkingLot, catchAsync(async (req, res) => {
 	const parkingLot = req.body.parkingLot;
+	if (!parkingLot) throw new AppError('Invalid form data', 400);
+
 	const location = parkingLot.city + ' - ' + parkingLot.province;
 
 	const newLot = new ParkingLot({
@@ -160,10 +200,11 @@ router.post('/', async (req, res) => {
 
 	await newLot.save();
 
-	res.redirect('/parkingLots');
-});
+	req.flash('success', 'Successfully made a new parking lot!');
+	res.redirect(`/parkingLots/${newLot._id}`);
+}));
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', validateParkingLot, catchAsync(async (req, res) => {
 	const { id } = req.params;
 	const foundParkingLot = await ParkingLot.findById(id);
 	const updatedLot = req.body.parkingLot;
@@ -173,12 +214,16 @@ router.put('/:id', async (req, res) => {
 	foundParkingLot.pictureLink = updatedLot.pictureLink;
 
 	await foundParkingLot.save();
-	res.redirect(`/parkingLots/${id}`);
-});
 
-router.delete('/:id', async (req, res) => {
+	req.flash('success', 'Successfully updated the parking lot!');
+	res.redirect(`/parkingLots/${id}`);
+}));
+
+router.delete('/:id', catchAsync(async (req, res) => {
 	await ParkingLot.findByIdAndDelete(req.params.id);
+
+	req.flash('success', 'Successfully deleted the parking lot!');
 	res.redirect('/parkingLots');
-});
+}));
 
 module.exports = router;
