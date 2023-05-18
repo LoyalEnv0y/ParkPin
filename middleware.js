@@ -1,6 +1,7 @@
 const ParkingLot = require('./models/parkingLot');
 const Review = require('./models/review');
 const { parkingLotJOI, reviewJOI, userJOI } = require('./utils/JoiSchemas');
+const AppError = require('./utils/AppError');
 
 module.exports.isLoggedIn = (req, res, next) => {
 	if (!req.isAuthenticated()) {

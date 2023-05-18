@@ -1,4 +1,5 @@
 <% layout('layouts/boilerplate') %>
+<link rel="stylesheet" href="/css/stars.css">
 
 <h1>Welcome to view <%= parkingLot.name %></h1>
 
@@ -57,7 +58,13 @@
 <h4 id="reviews">Reviews:</h4>
 <% for(let review of parkingLot.reviews) { %>
 <h6>Submitted by <%= review.author.username %></h6>
-<h4>Title: <%= review.title %> Rating: <%= review.rating %></h4>
+<h4>Title: <%= review.title %></h4>
+
+<h4>Rating:</h4>
+<p class="starability-result" data-rating="<%= review.rating %>">
+    Rated: <%= review.rating %> stars
+</p>
+
 <p>Body: <%= review.body %></p>
 <p>Votes: <%= review.votes %></p>
 
@@ -75,9 +82,20 @@
 <form action="/parkingLots/<%= parkingLot._id %>/reviews" method="post" novalidate class="validated-form col-3">
     <h2>Make a review</h2>
 
-    <label for="rating">Rating:</label>
-    <input type="range" name="review[rating]" id="rating" min="1" max="5">
-    <br>
+    <fieldset class="starability-heart">
+        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked
+            aria-label="No rating." />
+        <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+        <label for="first-rate1" title="Terrible">1 star</label>
+        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+        <label for="first-rate2" title="Not good">2 stars</label>
+        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+        <label for="first-rate3" title="Average">3 stars</label>
+        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+        <label for="first-rate4" title="Very good">4 stars</label>
+        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+        <label for="first-rate5" title="Amazing">5 stars</label>
+    </fieldset>
 
     <label for="title">Title:</label>
     <input class="form-control" type="text" name="review[title]" id="title" required>
