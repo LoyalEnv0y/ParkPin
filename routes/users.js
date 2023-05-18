@@ -6,6 +6,7 @@ const passport = require('passport')
 const AppError = require('../utils/AppError');
 
 const { userSchema: userJOI } = require('../utils/JoiSchemas');
+const {storeReturnTo} = require('../middleware');
 
 const validateUser = (req, res, next) => {
 	const { error } = userJOI.validate(req.body);
@@ -21,9 +22,9 @@ router.get('/login', (req, res) => {
 	res.render('users/login', { title: 'ParkPin | Login' });
 });
 
-router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
+router.post('/login', storeReturnTo, passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
 	req.flash('success', 'Welcome back!');
-	res.redirect('/parkingLots');
+	res.redirect('/campgrounds');
 });
 
 router.get('/register', (req, res) => {
@@ -39,10 +40,15 @@ router.post('/register', validateUser, catchAsync(async (req, res) => {
 			phoneNumber, citizenID
 		} = user);
 
-		await User.register(newUser, user.password);
+		const registeredUser = await User.register(newUser, user.password);
+		req.login(registeredUser, (err) => {
+			if (err) {
+				return next(err)
+			}
 
-		req.flash('success', 'Welcome to ParkPin!')
-		res.redirect('/login');
+			req.flash('success', 'Welcome to ParkPin!')
+			res.redirect('/');
+		})
 
 	} catch (err) {
 		req.flash('error', err.message)
@@ -51,7 +57,13 @@ router.post('/register', validateUser, catchAsync(async (req, res) => {
 }));
 
 router.get('/logout', (req, res) => {
-
+	req.logout((err) => {
+		if (err) {
+			return next(err);
+		}
+	});
+	req.flash('success', 'Goodbye!');
+	res.redirect('/');
 });
 
 module.exports = router;

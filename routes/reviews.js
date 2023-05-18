@@ -7,6 +7,7 @@ const Review = require('../models/review');
 const catchAsync = require('../utils/catchAsync');
 const {reviewSchema: reviewJOI} = require('../utils/JoiSchemas');
 const AppError = require('../utils/AppError');
+const {isLoggedIn} = require('../middleware');
 
 const validateReview = (req, res, next) => {
 	const { error } = reviewJOI.validate(req.body);
@@ -18,7 +19,7 @@ const validateReview = (req, res, next) => {
 	}
 }
 
-router.post('/', validateReview, catchAsync(async (req, res) => {
+router.post('/', isLoggedIn, validateReview, catchAsync(async (req, res) => {
     const id = req.params.id;
     const review = req.body.review;
     const foundParkingLot = await ParkingLot.findById(id);
@@ -38,7 +39,7 @@ router.post('/', validateReview, catchAsync(async (req, res) => {
     res.redirect(`/parkingLots/${id}#comments`);
 }));
 
-router.delete('/:reviewId', catchAsync(async (req, res) => {
+router.delete('/:reviewId', isLoggedIn, catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
 
     await ParkingLot.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });

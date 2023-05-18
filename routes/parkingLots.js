@@ -13,7 +13,7 @@ const AppError = require('../utils/AppError');
 
 const {parkingLotSchema: parkingLotJOI} = require('../utils/JoiSchemas');
 
-const {isLoggedIn} = require('../middleware');
+const {isLoggedIn, currentUser} = require('../middleware');
 
 /*
 If there are any floors with the same number as the user inputted, 
