@@ -44,9 +44,15 @@
 <br>
 <% } %>
 
+<% if (currentUser && parkingLot.owner.equals(currentUser)) { %>
 <a href="/parkingLots/<%= parkingLot._id %>/edit">
     <button class="btn btn-info">Edit</button>
 </a>
+
+<form action="/parkingLots/<%= parkingLot._id %>?_method=DELETE" method="post">
+    <button class="btn btn-danger">Delete</button>
+</form>
+<% } %>
 
 <h4 id="comments">Reviews:</h4>
 <% for(let review of parkingLot.reviews) { %>
@@ -73,12 +79,14 @@
     <label for="body">Review:</label>
     <textarea class="form-control mb-4" name="review[body]" id="body" required></textarea>
 
-    <button class="btn btn-success">Submit</button>
+    <% if (currentUser) { %>
+        <button class="btn btn-success">Submit</button>
+    <% } else { %>
+        <p class="text-danger">Please sign in to leave a review.</p>
+    <% } %>
 </form>
 
-<form action="/parkingLots/<%= parkingLot._id %>?_method=DELETE" method="post">
-    <button class="btn btn-danger">Delete</button>
-</form>
+
 
 <style>
     th,

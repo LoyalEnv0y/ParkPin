@@ -41,9 +41,10 @@ const resetUsers = async () => {
     // Create a new user
     const newUser = new User({
         username: 'Tester',
-        password: '123',
         email: 'test@gmail.com',
-        birthDate: '01-01-2000'
+        birthDate: '01-01-2000',
+        phoneNumber: '05555555555',
+        citizenID: '55555555555'
     });
 
     testUser = await newUser.save();

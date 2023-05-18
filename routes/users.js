@@ -3,28 +3,17 @@ const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/user');
 const passport = require('passport')
-const AppError = require('../utils/AppError');
 
-const { userSchema: userJOI } = require('../utils/JoiSchemas');
-const {storeReturnTo} = require('../middleware');
+const { validateUser } = require('../middleware');
 
-const validateUser = (req, res, next) => {
-	const { error } = userJOI.validate(req.body);
-	if (error) {
-		const msg = error.details.map(el => el.message).join(',');
-		throw new AppError(msg, 400);
-	} else {
-		next();
-	}
-}
 
 router.get('/login', (req, res) => {
 	res.render('users/login', { title: 'ParkPin | Login' });
 });
 
-router.post('/login', storeReturnTo, passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
+router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
 	req.flash('success', 'Welcome back!');
-	res.redirect('/campgrounds');
+	res.redirect('/parkingLots');
 });
 
 router.get('/register', (req, res) => {

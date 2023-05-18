@@ -39,7 +39,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Models
-const CitiesAndProvinces = require('./seeds/CitiesAndProvinces');
+const CitiesAndProvinces = require('./seeds/CitiesAndProvinces.json');
 
 // Mongoose
 const mongoose = require('mongoose');
@@ -87,6 +87,13 @@ app.use('/parkingLots', parkingLotRoutes);
 app.use('/parkingLots/:id/reviews', reviewsRoutes);
 app.use('/', userRoutes);
 
+// *********************************
+// JSON Start
+// *********************************
+app.get('/citiesAndProvinces', (req, res) => {
+	res.json(CitiesAndProvinces);
+});
+
 // Errors
 const AppError = require('./utils/AppError');
 
@@ -99,13 +106,6 @@ app.use((err, req, res, next) => {
 	if (!err.message) err.message = "Oh no! something went wrong";
 
 	res.status(err.status).render('error', { title: 'ParkPin | Error', err });
-});
-
-// *********************************
-// JSON Start
-// *********************************
-app.get('/citiesAndProvinces', (req, res) => {
-	res.json(CitiesAndProvinces);
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

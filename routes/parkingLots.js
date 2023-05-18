@@ -11,9 +11,8 @@ const Slot = require('../models/slot');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
 
-const {parkingLotSchema: parkingLotJOI} = require('../utils/JoiSchemas');
 
-const {isLoggedIn, currentUser} = require('../middleware');
+const { isLoggedIn, isAuthor, validateParkingLot } = require('../middleware');
 
 /*
 If there are any floors with the same number as the user inputted, 
@@ -38,7 +37,7 @@ const parseAndCreateFloors = async (data, parkingLot) => {
 
 	for (let i = 0; i < chunks.length; i++) {
 		let chunk = chunks[i];
-		chunk = chunk.replace(/\s+/g, '');  
+		chunk = chunk.replace(/\s+/g, '');
 
 		const pair = chunk.split('-');
 		const createdFloor = await createFloor(pair[0], pair[1], parkingLot);
@@ -133,18 +132,7 @@ const parseAndCreateHourPricePairs = async (data, parkingLot) => {
 	return await Promise.all(priceTables);
 }
 
-/*
-Check if the data is valid with JOI
-*/
-const validateParkingLot = (req, res, next) => {
-	const { error } = parkingLotJOI.validate(req.body);
-	if (error) {
-		const msg = error.details.map(el => el.message).join(',');
-		throw new AppError(msg, 400);
-	} else {
-		next();
-	}
-}
+
 
 router.get('/', catchAsync(async (req, res) => {
 	const allParkingLots = await ParkingLot.find({})
@@ -175,7 +163,7 @@ router.get('/:id', catchAsync(async (req, res) => {
 	});
 }));
 
-router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
 	const foundParkingLot = await ParkingLot.findById(req.params.id);
 	const [oldCity, oldProvince] = foundParkingLot.location.split(' - ');
 
@@ -198,6 +186,7 @@ router.post('/', isLoggedIn, validateParkingLot, catchAsync(async (req, res) => 
 		name: (parkingLot.name) ? parkingLot.name : location + ' Parking Lot',
 		location: location,
 		pictureLink: parkingLot.pictureLink,
+		owner: req.user._id
 	});
 	newLot.floors = await parseAndCreateFloors(parkingLot.floors, newLot);
 	newLot.priceTable = await parseAndCreateHourPricePairs(parkingLot.priceTable, newLot)
@@ -209,7 +198,7 @@ router.post('/', isLoggedIn, validateParkingLot, catchAsync(async (req, res) => 
 	res.redirect(`/parkingLots/${newLot._id}`);
 }));
 
-router.put('/:id', isLoggedIn, validateParkingLot, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, isAuthor, validateParkingLot, catchAsync(async (req, res) => {
 	const { id } = req.params;
 	const foundParkingLot = await ParkingLot.findById(id);
 	const updatedLot = req.body.parkingLot;
@@ -224,7 +213,7 @@ router.put('/:id', isLoggedIn, validateParkingLot, catchAsync(async (req, res) =
 	res.redirect(`/parkingLots/${id}`);
 }));
 
-router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
 	await ParkingLot.findByIdAndDelete(req.params.id);
 
 	req.flash('success', 'Successfully deleted the parking lot!');

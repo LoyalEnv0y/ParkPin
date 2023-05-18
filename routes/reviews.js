@@ -5,19 +5,8 @@ const ParkingLot = require('../models/parkingLot');
 const Review = require('../models/review');
 
 const catchAsync = require('../utils/catchAsync');
-const {reviewSchema: reviewJOI} = require('../utils/JoiSchemas');
-const AppError = require('../utils/AppError');
-const {isLoggedIn} = require('../middleware');
+const {isLoggedIn, validateReview} = require('../middleware');
 
-const validateReview = (req, res, next) => {
-	const { error } = reviewJOI.validate(req.body);
-	if (error) {
-		const msg = error.details.map(el => el.message).join(',');
-		throw new AppError(msg, 400);
-	} else {
-		next();
-	}
-}
 
 router.post('/', isLoggedIn, validateReview, catchAsync(async (req, res) => {
     const id = req.params.id;
