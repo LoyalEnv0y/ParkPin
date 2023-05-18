@@ -1,41 +1,41 @@
+// Express
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
-const ParkingLot = require('../models/parkingLot');
-const Review = require('../models/review');
-
+// Utils
 const catchAsync = require('../utils/catchAsync');
-const {isLoggedIn, validateReview} = require('../middleware');
 
+// Middleware
+const { isLoggedIn, validateReview, isReviewAuthor } = require('../middleware');
 
-router.post('/', isLoggedIn, validateReview, catchAsync(async (req, res) => {
-    const id = req.params.id;
-    const review = req.body.review;
-    const foundParkingLot = await ParkingLot.findById(id);
+// Controllers
+const reviews = require('../controllers/reviews');
 
-    const newReview = new Review({
-    	title: review.title,
-    	body: review.body,
-    	rating: review.rating,
-    });
+router.route('/')
+    .post(
+        isLoggedIn,
+        validateReview,
+        catchAsync(reviews.createReview)
+    )
 
-    foundParkingLot.reviews.push(newReview);
+router.route('/:reviewId/edit')
+    .get(
+        isLoggedIn,
+        isReviewAuthor,
+        catchAsync(reviews.renderEdit)
+    )
 
-    await newReview.save();
-    await foundParkingLot.save();
-
-    req.flash('success', 'Created a new review!');
-    res.redirect(`/parkingLots/${id}#comments`);
-}));
-
-router.delete('/:reviewId', isLoggedIn, catchAsync(async (req, res) => {
-    const { id, reviewId } = req.params;
-
-    await ParkingLot.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-    await Review.findByIdAndDelete(reviewId);
-
-    req.flash('success', 'Deleted the review!');
-    res.redirect(`/parkingLots/${id}#comments`)
-}));
+router.route('/:reviewId/')
+    .put(
+        isLoggedIn,
+        isReviewAuthor,
+        validateReview,
+        catchAsync(reviews.updateReview)
+    )
+    .delete(
+        isLoggedIn,
+        isReviewAuthor,
+        catchAsync(reviews.deleteReview)
+    );
 
 module.exports = router;

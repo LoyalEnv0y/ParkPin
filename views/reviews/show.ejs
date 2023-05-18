@@ -1,0 +1,21 @@
+<% layout('layouts/boilerplate') %>
+
+<h1>Edit Your Review</h1>
+
+<form action="/parkingLots/<%= id %>/reviews/<%= review._id %>?_method=PUT" method="POST" novalidate class="validated-form col-3">
+	<label for="rating">Rating:</label>
+	<input type="range" name="review[rating]" id="rating" min="1" max="5" value="<%= review.rating %>">
+	<br>
+
+	<label for="title">Title:</label>
+	<input class="form-control" type="text" name="review[title]" id="title" value="<%= review.title %>" required>
+
+	<label for="body">Review:</label>
+	<textarea class="form-control mb-4" name="review[body]" id="body" placeholder="<%= review.body %>" required></textarea>
+
+	<button class="btn btn-success">Submit</button>
+</form>
+
+<a href="/parkingLots/<%= id %>">
+	<button class="btn btn-danger">Cancel</button>
+</a>

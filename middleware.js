@@ -1,5 +1,6 @@
 const ParkingLot = require('./models/parkingLot');
-const {parkingLotJOI, reviewJOI, userJOI } = require('./utils/JoiSchemas');
+const Review = require('./models/review');
+const { parkingLotJOI, reviewJOI, userJOI } = require('./utils/JoiSchemas');
 
 module.exports.isLoggedIn = (req, res, next) => {
 	if (!req.isAuthenticated()) {
@@ -12,7 +13,7 @@ module.exports.isLoggedIn = (req, res, next) => {
 }
 
 module.exports.isAuthor = async (req, res, next) => {
-	const {id} = req.params;
+	const { id } = req.params;
 
 	const foundParkingLot = await ParkingLot.findById(id);
 
@@ -24,9 +25,19 @@ module.exports.isAuthor = async (req, res, next) => {
 	next();
 }
 
-/*
-Check if the data is valid with JOI
-*/
+module.exports.isReviewAuthor = async (req, res, next) => {
+	const {id, reviewId} = req.params;
+	
+	const foundReview = await Review.findById(reviewId);
+
+	if (!foundReview.author.equals(req.user._id)) {
+		req.flash('error', 'You do not have the permission to do that!');
+		return res.redirect(`/parkingLots/${id}`);
+	}
+
+	next();
+}
+
 module.exports.validateParkingLot = (req, res, next) => {
 	const { error } = parkingLotJOI.validate(req.body);
 	if (error) {

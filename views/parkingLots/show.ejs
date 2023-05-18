@@ -46,24 +46,30 @@
 
 <% if (currentUser && parkingLot.owner.equals(currentUser)) { %>
 <a href="/parkingLots/<%= parkingLot._id %>/edit">
-    <button class="btn btn-info">Edit</button>
+    <button class="btn btn-info">Edit Lot</button>
 </a>
 
 <form action="/parkingLots/<%= parkingLot._id %>?_method=DELETE" method="post">
-    <button class="btn btn-danger">Delete</button>
+    <button class="btn btn-danger">Delete Lot</button>
 </form>
 <% } %>
 
-<h4 id="comments">Reviews:</h4>
+<h4 id="reviews">Reviews:</h4>
 <% for(let review of parkingLot.reviews) { %>
-<h6>Submitted by <%= review.author %></h6>
+<h6>Submitted by <%= review.author.username %></h6>
 <h4>Title: <%= review.title %> Rating: <%= review.rating %></h4>
 <p>Body: <%= review.body %></p>
 <p>Votes: <%= review.votes %></p>
 
+<% if (currentUser && review.author.equals(currentUser)) { %>
+<a href="/parkingLots/<%= parkingLot._id %>/reviews/<%= review._id %>/edit">
+    <button class="btn btn-info">Edit Review</button>
+</a>
+
 <form action="/parkingLots/<%= parkingLot._id %>/reviews/<%= review._id %>?_method=DELETE" method="post">
-    <button class="btn btn-danger">Delete</button>
+    <button class="btn btn-danger">Delete Review</button>
 </form>
+<% } %>
 <% } %>
 
 <form action="/parkingLots/<%= parkingLot._id %>/reviews" method="post" novalidate class="validated-form col-3">
@@ -80,9 +86,9 @@
     <textarea class="form-control mb-4" name="review[body]" id="body" required></textarea>
 
     <% if (currentUser) { %>
-        <button class="btn btn-success">Submit</button>
+    <button class="btn btn-success">Submit</button>
     <% } else { %>
-        <p class="text-danger">Please sign in to leave a review.</p>
+    <p class="text-danger">Please sign in to leave a review.</p>
     <% } %>
 </form>
 
