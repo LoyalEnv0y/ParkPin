@@ -23,6 +23,14 @@ async function main() {
 }
 main().catch(() => console.log('Mongodb connection failed'));
 
+// Cloudinary
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 // Returns a random value from a given object or array
 const getSampleFromData = data => (data[getRandNum(data.length)]);
 
@@ -38,33 +46,58 @@ const resetUsers = async () => {
     // Clear old users
     await User.deleteMany();
 
-    // Create a new user
+    // Create a new user with the password of 'aa'
     const newUser = new User({
         username: 'Tester',
         email: 'test@gmail.com',
         birthDate: '01-01-2000',
         phoneNumber: '05555555555',
-        citizenID: '55555555555'
+        citizenID: '55555555555',
+        salt: '9d7568d2cfc88b84fa34ae8a2c0db3daaea6702db605ff752f2e2fb21a6f9d12',
+        hash: '530092f22e293de49d4a2d412458e589957b4ede9d04fbd239b0fd8bf3d66e6b60952677303d0786acb7037081170302b4a00626df9e50c4542f2e943acff4ab9d850e59dc4443557e0510a18ada5c6480317c392de6b39f6aab07bab4d257ccdb3cd233c8e63c0b30b2ce1e32199b2f2a20de07d1faef67164becd389ea00149d8d236e4835cc93c435c16b117e7db43efaab7c152458bac7c2ec2426a09c83d75b105c66ad3288f758f925e64a1a7f227637a3e50bd25cbd9f7cd7685891b71c60ea719ce9279e2ff18de25e9f17bd5557c251c7b3012d0360261da926d4f40b5ae41e53bb3b7ac6b24b8c22bfef6c84c6abea64e8dd8e712591c1b704d6b7c7438bc135b67e54b863511358b21ef7e65792b91c4d0756538f226f78cb1c3b540d31d0d74fbc6e9107e9964dab0d6cda6485ea2f282e38565b75894d668d270f04d5307b56e10837ac5cf0915753321de452fa33db815948da308b800cfbad62d1e340a937bc7bb5b29e76f574dd5acaa0c33175f61af3da026257b0ba66f1e3b813188b603c9571337c389445e71bf23bd1628e5e2a82d9360faf757e0d28b52044f1f40d6a7ddc6e72aa708034862b68218b2464b1c2a76386ca3b29cec19eaa050d7bee1221e36b1ee413e5b96977502c9e81a42fe14613c8f768e86c7b61b24109a7d9e96a14aadb810da6776dbc64c1b243cd7036e339b7fd29a0537e'
     });
 
     testUser = await newUser.save();
 };
 
 // Gets random landscape oriented images from a collection on Unsplash
-const getRandImgURL = async () => {
-    try {
-        const resp = await axios.get('https://api.unsplash.com/photos/random', {
+const seedImgs = async () => {
+    const randImgCount = Math.floor(Math.random() * 1) + 1;
+    const imgPromises = [];
 
-            params: {
-                client_id: process.env.UNSPLASH_ACCESS_KEY,
-                collections: 'YrD1o4l6cWs',
-                orientation: 'landscape'
-            },
-        });
-        return resp.data.urls.regular
+    try {
+        for (let i = 0; i < randImgCount; i++) {
+            const resp = await axios.get('https://api.unsplash.com/photos/random', {
+                params: {
+                    client_id: process.env.UNSPLASH_ACCESS_KEY,
+                    collections: 'YrD1o4l6cWs',
+                    orientation: 'landscape'
+                },
+            });
+
+            const uploadedImage = uploadImage(resp.data.urls.regular);
+            imgPromises.push(uploadedImage)
+        }
     } catch (err) {
         console.error(err);
         return err;
+    }
+
+    let resolvedImages = await Promise.all(imgPromises);
+
+    resolvedImages = resolvedImages
+        .map(i => ({ url: i.url, filename: i.public_id }));
+
+    console.log("After", resolvedImages);
+    return resolvedImages
+}
+// Upload images to cloudinary
+const uploadImage = async imagePath => {
+    try {
+        const result = await cloudinary.uploader.upload(imagePath, { folder: 'ParkPin/ParkingLots' });
+        return result;
+    } catch (err) {
+        console.log("Error at upload Image => ", err);
     }
 }
 
@@ -111,12 +144,12 @@ const createRandomFloors = async (floorCount, parkingLot) => {
             floorNum: i + 1
         })
 
-        await newFloor.save()
+        newFloor.save()
             .then(floor => createdFloors.push(floor))
             .catch(err => console.log(`Error while saving a new floor ${err}`))
     }
 
-    return createdFloors;
+    return await Promise.all(createdFloors);
 }
 
 const createRandomSlots = async (slotCount, floorNum, parkingLot) => {
@@ -129,12 +162,12 @@ const createRandomSlots = async (slotCount, floorNum, parkingLot) => {
             locatedAt: parkingLot
         });
 
-        await newSlot.save()
+        newSlot.save()
             .then(slot => createdSlots.push(slot))
             .catch(err => console.log(`Error while saving a new slot ${err}`))
     }
 
-    return createdSlots;
+    return await Promise.all(createdSlots);
 }
 
 /* Deletes old parking lots, creates new parking lots with random properties and
@@ -148,7 +181,7 @@ const resetParkingLots = async () => {
     await Review.deleteMany();
 
     // Create new lots 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 1; i++) {
         // Get new lot's data
         const randCity = getSampleFromData(Object.keys(CitiesAndProvinces));
         const randProvince = getSampleFromData(CitiesAndProvinces[randCity]);
@@ -160,7 +193,7 @@ const resetParkingLots = async () => {
             location: `${randCity} - ${randProvince}`,
             available: Math.random() > 0.07,
             priceTable: createRandomPrices(),
-            pictureLink: await getRandImgURL()
+            images: await seedImgs()
         })
 
         // Assign the lot to testUser but saves the user only after the slot has been saved

@@ -47,7 +47,12 @@ const parkingLotSchema = new Schema({
         },
     ],
 
-    pictureLink: String,
+    images: [
+        {
+            url: String,
+            filename: String
+        }
+    ],
 
     reviews: [
         {

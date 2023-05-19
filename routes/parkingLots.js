@@ -11,13 +11,20 @@ const { isLoggedIn, isAuthor, validateParkingLot } = require('../middleware');
 // Controllers
 const parkingLots = require('../controllers/parkingLots')
 
+// Multer
+const multer = require('multer')
+const { storage } = require('../cloudinary/index');
+const upload = multer({ storage })
+
 router.route('/')
 	.get(catchAsync(parkingLots.renderIndex))
 	.post(
 		isLoggedIn,
+		upload.array('image'),
 		validateParkingLot,
 		catchAsync(parkingLots.createParkingLot)
 	);
+
 
 router.route('/new')
 	.get(

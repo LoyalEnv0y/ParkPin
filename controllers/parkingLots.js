@@ -62,11 +62,14 @@ module.exports.createParkingLot = async (req, res) => {
 	const newLot = new ParkingLot({
 		name: (parkingLot.name) ? parkingLot.name : location + ' Parking Lot',
 		location: location,
-		pictureLink: parkingLot.pictureLink,
+		images: req.files.map(i => ({ url: i.path, filename: i.filename })),
 		owner: req.user._id
 	});
-	newLot.floors = await floorsAndSlots.parseAndCreateFloors(parkingLot.floors, newLot);
-	newLot.priceTable = await hourPricePairs.parseAndCreateHourPricePairs(parkingLot.priceTable, newLot)
+
+	newLot.floors = await floorsAndSlots
+		.parseAndCreateFloors(parkingLot.floors, newLot);
+	newLot.priceTable = await hourPricePairs
+		.parseAndCreateHourPricePairs(parkingLot.priceTable, newLot)
 
 	await newLot.save();
 
