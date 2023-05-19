@@ -62,7 +62,7 @@ const resetUsers = async () => {
 
 // Gets random landscape oriented images from a collection on Unsplash
 const seedImgs = async () => {
-    const randImgCount = Math.floor(Math.random() * 1) + 1;
+    const randImgCount = Math.floor(Math.random() * 2) + 1;
     const imgPromises = [];
 
     try {
@@ -88,9 +88,9 @@ const seedImgs = async () => {
     resolvedImages = resolvedImages
         .map(i => ({ url: i.url, filename: i.public_id }));
 
-    console.log("After", resolvedImages);
     return resolvedImages
 }
+
 // Upload images to cloudinary
 const uploadImage = async imagePath => {
     try {
@@ -98,6 +98,19 @@ const uploadImage = async imagePath => {
         return result;
     } catch (err) {
         console.log("Error at upload Image => ", err);
+    }
+}
+
+// Delete images from cloundinary
+const clearPhotosFromCloudinary = async () => {
+    const oldParkingLots = await ParkingLot.find();
+
+    if (oldParkingLots.length < 1) return;
+
+    for (let parkingLot of oldParkingLots) {
+        parkingLot.images.forEach(image => {
+            cloudinary.uploader.destroy(image.filename);
+        })
     }
 }
 
@@ -174,6 +187,7 @@ const createRandomSlots = async (slotCount, floorNum, parkingLot) => {
 Assigns all those newly created parking lots to testUser. */
 const resetParkingLots = async () => {
     // Clear old lots
+    await clearPhotosFromCloudinary();
     await ParkingLot.deleteMany();
     await Floor.deleteMany();
     await Slot.deleteMany();
@@ -181,7 +195,7 @@ const resetParkingLots = async () => {
     await Review.deleteMany();
 
     // Create new lots 
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 2; i++) {
         // Get new lot's data
         const randCity = getSampleFromData(Object.keys(CitiesAndProvinces));
         const randProvince = getSampleFromData(CitiesAndProvinces[randCity]);
