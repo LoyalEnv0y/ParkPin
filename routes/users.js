@@ -22,14 +22,14 @@ router.route('/login')
 		users.login
 	);
 
-router.route('register')
+router.route('/register')
 	.get(users.renderRegister)
 	.post(
 		validateUser,
 		catchAsync(users.register)
 	);
 
-router.route('logout')
+router.route('/logout')
 	.get(users.logout);
 
 module.exports = router;

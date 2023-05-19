@@ -84,7 +84,11 @@ module.exports.updateParkingLot = async (req, res) => {
 
 	foundParkingLot.name = updatedLot.name;
 	foundParkingLot.location = updatedLot.city + ' - ' + updatedLot.province;
-	foundParkingLot.pictureLink = updatedLot.pictureLink;
+
+	const newImages = req.files
+		.map(i => ({ url: i.path, filename: i.filename }))
+
+	foundParkingLot.images.push(...newImages);
 
 	await foundParkingLot.save();
 

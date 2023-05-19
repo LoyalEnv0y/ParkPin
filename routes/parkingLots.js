@@ -25,7 +25,6 @@ router.route('/')
 		catchAsync(parkingLots.createParkingLot)
 	);
 
-
 router.route('/new')
 	.get(
 		isLoggedIn,
@@ -37,6 +36,7 @@ router.route('/:id')
 	.put(
 		isLoggedIn,
 		isAuthor,
+		upload.array('image'),
 		validateParkingLot,
 		catchAsync(parkingLots.updateParkingLot)
 	)
