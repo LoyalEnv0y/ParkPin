@@ -9,6 +9,8 @@ const hourPricePairs = require('../utils/hourPricePairs');
 // Data
 const CitiesAndProvinces = require('../seeds/CitiesAndProvinces.json');
 
+const { cloudinary } = require('../cloudinary/index');
+
 module.exports.renderIndex = async (req, res) => {
 	const allParkingLots = await ParkingLot.find({}).populate('owner');
 
@@ -90,6 +92,14 @@ module.exports.updateParkingLot = async (req, res) => {
 
 	foundParkingLot.images.push(...newImages);
 
+	if (req.body.deleteImages) {
+		req.body.deleteImages.forEach(async filename => {
+			await cloudinary.uploader.destroy(filename);
+		})
+
+		await foundParkingLot.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
+	}
+
 	await foundParkingLot.save();
 
 	req.flash('success', 'Successfully updated the parking lot!');
@@ -97,7 +107,14 @@ module.exports.updateParkingLot = async (req, res) => {
 }
 
 module.exports.deleteParkingLot = async (req, res) => {
-	await ParkingLot.findByIdAndDelete(req.params.id);
+	const { id } = req.params;
+	const foundParkingLot = await ParkingLot.findById(id);
+	
+	foundParkingLot.images.forEach(async img => {
+		await cloudinary.uploader.destroy(img.filename);
+	});
+
+	await ParkingLot.deleteOne(foundParkingLot);
 
 	req.flash('success', 'Successfully deleted the parking lot!');
 	res.redirect('/parkingLots');

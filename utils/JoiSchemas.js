@@ -9,6 +9,8 @@ module.exports.parkingLotJOI = Joi.object({
 		floors: Joi.string().regex(/^\s*\d+\s*-\s*\d+(?:,\s*\d+\s*-\s*\d+)*\s*$/),
 		priceTable: Joi.string().regex(/^\s*\d+\s*-\s*\d+\s*=\s*\d+(?:,\s*\d+\s*-\s*\d+\s*=\s*\d+)*\s*$/)
 	}).required(),
+
+	deleteImages: Joi.array()
 });
 
 module.exports.reviewJOI = Joi.object({
