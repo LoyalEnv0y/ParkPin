@@ -14,28 +14,6 @@ const { cloudinary } = require('../cloudinary/parkingLotStorage');
 const defaultImgURL = "https://res.cloudinary.com/dlie9x7yk/image/upload/v1684585107/ParkPin/Defaults/DefaultParkingLotImage.png"
 const defaultImgFilename = "ParkPin/Defaults/DefaultParkingLotImage"
 
-const deleteImages = async (req, res, next) => {
-	await foundParkingLot.updateOne({
-		$pull: {
-			images: {
-				filename: {
-					$in: req.body.deleteImages,
-					$ne: defaultImgFilename
-				}
-			}
-		}
-	})
-
-
-	if (!req.files.length < 1) {
-		newLot.images = req.files
-			.map(i => ({ url: i.path, filename: i.filename }))
-	} else {
-		newLot.images[0] = { url: defaultImgURL, filename: defaultImgFilename };
-	}
-}
-
-
 module.exports.renderIndex = async (req, res) => {
 	const allParkingLots = await ParkingLot.find({}).populate('owner');
 
@@ -146,14 +124,10 @@ module.exports.updateParkingLot = async (req, res) => {
 		foundParkingLot.images
 			.push({ url: defaultImgURL, filename: defaultImgFilename })
 	} else if (foundParkingLot.images.length > 1) {
-		console.log("Here", foundParkingLot)
 		foundParkingLot.images = foundParkingLot.images.filter(
 			img => img.filename != defaultImgFilename
 		);
 	}
-
-	console.log("Here2", foundParkingLot)
-
 
 	await foundParkingLot.save();
 

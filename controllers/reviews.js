@@ -37,8 +37,6 @@ module.exports.updateReview = async (req, res) => {
 	const foundReview = await Review.findByIdAndUpdate(reviewId, { ...req.body.review }, { runValidators: true });
 	await foundReview.save();
 
-	console.log(foundReview);
-
 	req.flash('success', 'Successfully edited your review!');
 	res.redirect(`/parkingLots/${id}#reviews`);
 }
