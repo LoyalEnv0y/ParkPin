@@ -31,7 +31,7 @@ module.exports.userJOI = Joi.object({
 		email: Joi.string().required(),
 		password: Joi.string().required(),
 		birthDate: Joi.date().less(highDateLimit).greater(lowDateLimit).required(),
-		profilePicLink: Joi.string().required(),
+		// profilePicLink: Joi.string().required(),
 		phoneNumber: Joi.string().regex(/^[0-9]+$/).required(),
 		citizenID: Joi.string().regex(/^[0-9]{11}$/).required(),
 	}).required()

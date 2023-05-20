@@ -13,7 +13,7 @@ const parkingLots = require('../controllers/parkingLots')
 
 // Multer
 const multer = require('multer')
-const { storage } = require('../cloudinary/index');
+const { storage } = require('../cloudinary/parkingLotStorage');
 const upload = multer({ storage })
 
 router.route('/')
@@ -35,21 +35,21 @@ router.route('/:id')
 	.get(catchAsync(parkingLots.renderShow))
 	.put(
 		isLoggedIn,
-		isAuthor,
+		catchAsync(isAuthor),
 		upload.array('image'),
 		validateParkingLot,
 		catchAsync(parkingLots.updateParkingLot)
 	)
 	.delete(
 		isLoggedIn,
-		isAuthor,
+		catchAsync(isAuthor),
 		catchAsync(parkingLots.deleteParkingLot)
 	);
 
 router.route('/:id/edit')
 	.get(
 		isLoggedIn,
-		isAuthor,
+		catchAsync(isAuthor),
 		catchAsync(parkingLots.renderEdit)
 	);
 

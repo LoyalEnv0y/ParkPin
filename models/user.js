@@ -4,7 +4,21 @@ const Car = require('./car');
 const ParkingLot = require('./parkingLot');
 
 const passportLocalMongoose = require('passport-local-mongoose');
-const { userSchema } = require('../utils/JoiSchemas');
+
+const ImageSchema = new Schema({
+    url: String,
+    filename: String
+});
+
+ImageSchema.virtual('thumbnail').get(function() {
+    let thumbnail = this.url && this.url.replace('/upload', '/upload/w_100')
+    return thumbnail;
+});
+
+ImageSchema.virtual('avatar').get(function() {
+    let thumbnail = this.url && this.url.replace('/upload', '/upload/w_50')
+    return thumbnail;
+});
 
 const UserSchema = new Schema({
     username: {
@@ -24,9 +38,7 @@ const UserSchema = new Schema({
         required: true
     },
 
-    profilePicLink: {
-        type: String
-    },
+    image: ImageSchema,
 
     phoneNumber: {
         type: String,

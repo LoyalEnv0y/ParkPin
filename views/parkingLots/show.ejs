@@ -86,7 +86,8 @@
 
 <h4 id="reviews">Reviews:</h4>
 <% for(let review of parkingLot.reviews) { %>
-<h6>Submitted by <%= review.author.username %></h6>
+<h6 class="d-inline">Submitted by <%= review.author.username %></h6>
+<img class="rounded-circle" src="<%= review.author.image.avatar %>" alt="">
 <h4>Title: <%= review.title %></h4>
 
 <h4>Rating:</h4>

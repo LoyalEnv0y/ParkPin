@@ -29,6 +29,9 @@
 				<a href="/login" class="nav-link">Login</a>
 				<a href="/register" class="nav-link">Register</a>
 			<% } else {%>
+				<a href="/me" class="me-2">
+					<img class="rounded-circle" src="<%= currentUser.image.avatar %>" alt="">
+				</a>
 				<a href="/logout" class="nav-link">Logout</a>
 			<% } %>
 		</div>

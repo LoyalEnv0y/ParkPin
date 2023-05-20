@@ -7,10 +7,15 @@ const catchAsync = require('../utils/catchAsync');
 const passport = require('passport')
 
 // Middleware
-const { validateUser } = require('../middleware');
+const { validateUser, isLoggedIn, isAuthor } = require('../middleware');
 
 // Controllers
 const users = require('../controllers/users');
+
+// Multer
+const multer = require('multer')
+const { storage } = require('../cloudinary/usersStorage');
+const upload = multer({ storage });
 
 router.route('/login')
 	.get(users.renderLogin)
@@ -25,8 +30,15 @@ router.route('/login')
 router.route('/register')
 	.get(users.renderRegister)
 	.post(
+		upload.single('image'),
 		validateUser,
 		catchAsync(users.register)
+	);
+
+router.route('/me')
+	.get(
+		isLoggedIn,
+		users.renderMe
 	);
 
 router.route('/logout')

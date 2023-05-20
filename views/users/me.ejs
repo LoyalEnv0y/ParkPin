@@ -1,0 +1,11 @@
+<% layout('layouts/boilerplate') %>
+
+<h1>Hi <%= currentUser.username %></h1>
+
+<img src="<%= currentUser.image.thumbnail %>" alt="">
+
+<ul>
+	<li>Email: <%= currentUser.email %></li>
+	<li>Birth date: <%= currentUser.birthDate %></li>
+	<li>Phone Number: <%= currentUser.phoneNumber %></li>
+</ul>

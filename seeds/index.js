@@ -43,6 +43,8 @@ const getRandNum = (ceil, floor = 0) => {
 let testUser = null;
 // Deletes all the old users and creates a new user then assigns it to testUser
 const resetUsers = async () => {
+    // Clear old user photos
+    await clearUserPhotosFromCloudinary();
     // Clear old users
     await User.deleteMany();
 
@@ -102,16 +104,35 @@ const uploadImage = async imagePath => {
 }
 
 // Delete images from cloundinary
-const clearPhotosFromCloudinary = async () => {
+const clearLotPhotosFromCloudinary = async () => {
     const oldParkingLots = await ParkingLot.find();
+    const clearedLotPhotos = []
 
     if (oldParkingLots.length < 1) return;
 
     for (let parkingLot of oldParkingLots) {
         parkingLot.images.forEach(image => {
-            cloudinary.uploader.destroy(image.filename);
-        })
+            clearedLotPhotos.push(cloudinary.uploader.destroy(image.filename));
+        });
     }
+
+    return Promise.all(clearedLotPhotos);
+}
+
+// Delete images from cloundinary
+const clearUserPhotosFromCloudinary = async () => {
+    const oldUsers = await User.find();
+    const clearedUserPhotos = []
+
+    if (oldUsers.length < 1) return;
+
+    for (let user of oldUsers) {
+        if (!user.image) continue;
+
+        clearedUserPhotos.push(cloudinary.uploader.destroy(user.image.filename));
+    }
+
+    return Promise.all(clearedUserPhotos);
 }
 
 // Creates randomly picked hour - price pairs.
@@ -187,7 +208,7 @@ const createRandomSlots = async (slotCount, floorNum, parkingLot) => {
 Assigns all those newly created parking lots to testUser. */
 const resetParkingLots = async () => {
     // Clear old lots
-    await clearPhotosFromCloudinary();
+    await clearLotPhotosFromCloudinary();
     await ParkingLot.deleteMany();
     await Floor.deleteMany();
     await Slot.deleteMany();

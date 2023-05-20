@@ -9,7 +9,7 @@ const hourPricePairs = require('../utils/hourPricePairs');
 // Data
 const CitiesAndProvinces = require('../seeds/CitiesAndProvinces.json');
 
-const { cloudinary } = require('../cloudinary/index');
+const { cloudinary } = require('../cloudinary/parkingLotStorage');
 
 module.exports.renderIndex = async (req, res) => {
 	const allParkingLots = await ParkingLot.find({}).populate('owner');
@@ -109,7 +109,7 @@ module.exports.updateParkingLot = async (req, res) => {
 module.exports.deleteParkingLot = async (req, res) => {
 	const { id } = req.params;
 	const foundParkingLot = await ParkingLot.findById(id);
-	
+
 	foundParkingLot.images.forEach(async img => {
 		await cloudinary.uploader.destroy(img.filename);
 	});

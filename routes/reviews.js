@@ -21,20 +21,20 @@ router.route('/')
 router.route('/:reviewId/edit')
     .get(
         isLoggedIn,
-        isReviewAuthor,
+        catchAsync(isReviewAuthor),
         catchAsync(reviews.renderEdit)
     )
 
 router.route('/:reviewId/')
     .put(
         isLoggedIn,
-        isReviewAuthor,
+        catchAsync(isReviewAuthor),
         validateReview,
         catchAsync(reviews.updateReview)
     )
     .delete(
         isLoggedIn,
-        isReviewAuthor,
+        catchAsync(isReviewAuthor),
         catchAsync(reviews.deleteReview)
     );
 

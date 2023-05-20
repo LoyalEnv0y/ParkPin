@@ -18,9 +18,11 @@ module.exports.register = async (req, res) => {
 		const user = req.body.user
 
 		const newUser = User({
-			username, email, birthDate, profilePicLink,
+			username, email, birthDate,
 			phoneNumber, citizenID
 		} = user);
+
+		newUser.image = { url: req.file.path, filename: req.file.filename };
 
 		const registeredUser = await User.register(newUser, user.password);
 		req.login(registeredUser, (err) => {
@@ -30,12 +32,16 @@ module.exports.register = async (req, res) => {
 
 			req.flash('success', 'Welcome to ParkPin!')
 			res.redirect('/');
-		})
+		});
 
 	} catch (err) {
 		req.flash('error', err.message)
 		res.redirect('/register');
 	}
+}
+
+module.exports.renderMe = (req, res) => {
+	res.render('users/me', { title: 'ParkPin | Profile' });
 }
 
 module.exports.logout = (req, res) => {
