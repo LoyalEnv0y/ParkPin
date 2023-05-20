@@ -13,6 +13,9 @@ module.exports.renderRegister = (req, res) => {
 	res.render('users/register', { title: 'ParkPin | Register' });
 }
 
+const defaultUserImgURL = "https://res.cloudinary.com/dlie9x7yk/image/upload/v1684584394/ParkPin/Defaults/DefaultUserImage.jpg"
+const defaultUserImgFilename = "ParkPin/Defaults/DefaultUserImage"
+
 module.exports.register = async (req, res) => {
 	try {
 		const user = req.body.user
@@ -23,9 +26,11 @@ module.exports.register = async (req, res) => {
 		} = user);
 
 		if (req.file) {
+			console.log("Here 1", req.file)
 			newUser.image = { url: req.file.path, filename: req.file.filename };
 		} else {
-			newUser.image.url = "https://res.cloudinary.com/dlie9x7yk/image/upload/v1684584394/ParkPin/Defaults/DefaultUserImage.jpg"
+			console.log("Here 2", newUser)
+			newUser.image = { url: defaultUserImgURL, filename: defaultUserImgFilename }
 		}
 
 		const registeredUser = await User.register(newUser, user.password);
