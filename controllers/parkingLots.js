@@ -11,6 +11,31 @@ const CitiesAndProvinces = require('../seeds/CitiesAndProvinces.json');
 
 const { cloudinary } = require('../cloudinary/parkingLotStorage');
 
+const defaultImgURL = "https://res.cloudinary.com/dlie9x7yk/image/upload/v1684585107/ParkPin/Defaults/DefaultParkingLotImage.png"
+const defaultImgFilename = "ParkPin/Defaults/DefaultParkingLotImage"
+
+const deleteImages = async (req, res, next) => {
+	await foundParkingLot.updateOne({
+		$pull: {
+			images: {
+				filename: {
+					$in: req.body.deleteImages,
+					$ne: defaultImgFilename
+				}
+			}
+		}
+	})
+
+
+	if (!req.files.length < 1) {
+		newLot.images = req.files
+			.map(i => ({ url: i.path, filename: i.filename }))
+	} else {
+		newLot.images[0] = { url: defaultImgURL, filename: defaultImgFilename };
+	}
+}
+
+
 module.exports.renderIndex = async (req, res) => {
 	const allParkingLots = await ParkingLot.find({}).populate('owner');
 
@@ -64,9 +89,15 @@ module.exports.createParkingLot = async (req, res) => {
 	const newLot = new ParkingLot({
 		name: (parkingLot.name) ? parkingLot.name : location + ' Parking Lot',
 		location: location,
-		images: req.files.map(i => ({ url: i.path, filename: i.filename })),
 		owner: req.user._id
 	});
+
+	if (req.files.length > 0) {
+		newLot.images = req.files
+			.map(i => ({ url: i.path, filename: i.filename }))
+	} else {
+		newLot.images[0] = { url: defaultImgURL, filename: defaultImgFilename };
+	}
 
 	newLot.floors = await floorsAndSlots
 		.parseAndCreateFloors(parkingLot.floors, newLot);
@@ -81,11 +112,16 @@ module.exports.createParkingLot = async (req, res) => {
 
 module.exports.updateParkingLot = async (req, res) => {
 	const { id } = req.params;
-	const foundParkingLot = await ParkingLot.findById(id);
 	const updatedLot = req.body.parkingLot;
 
-	foundParkingLot.name = updatedLot.name;
-	foundParkingLot.location = updatedLot.city + ' - ' + updatedLot.province;
+	const foundParkingLot = await ParkingLot.findByIdAndUpdate(
+		id,
+		{
+			name: updatedLot.name,
+			location: updatedLot.city + ' - ' + updatedLot.province,
+		},
+		{ new: true } // Returns the modified document
+	);
 
 	const newImages = req.files
 		.map(i => ({ url: i.path, filename: i.filename }))
@@ -93,12 +129,31 @@ module.exports.updateParkingLot = async (req, res) => {
 	foundParkingLot.images.push(...newImages);
 
 	if (req.body.deleteImages) {
+		// Delete images from cloudinary except for default
 		req.body.deleteImages.forEach(async filename => {
+			if (filename == defaultImgFilename) return;
+
 			await cloudinary.uploader.destroy(filename);
 		})
 
-		await foundParkingLot.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
+		// Delete the images from lot object
+		foundParkingLot.images = foundParkingLot.images.filter(
+			img => !req.body.deleteImages.includes(img.filename)
+		);
 	}
+
+	if (foundParkingLot.images.length < 1) {
+		foundParkingLot.images
+			.push({ url: defaultImgURL, filename: defaultImgFilename })
+	} else if (foundParkingLot.images.length > 1) {
+		console.log("Here", foundParkingLot)
+		foundParkingLot.images = foundParkingLot.images.filter(
+			img => img.filename != defaultImgFilename
+		);
+	}
+
+	console.log("Here2", foundParkingLot)
+
 
 	await foundParkingLot.save();
 
@@ -111,6 +166,8 @@ module.exports.deleteParkingLot = async (req, res) => {
 	const foundParkingLot = await ParkingLot.findById(id);
 
 	foundParkingLot.images.forEach(async img => {
+		if (img.url == defaultImgURL) return;
+
 		await cloudinary.uploader.destroy(img.filename);
 	});
 

@@ -103,6 +103,10 @@ const uploadImage = async imagePath => {
     }
 }
 
+const defaultLotImgURL = "https://res.cloudinary.com/dlie9x7yk/image/upload/v1684585107/ParkPin/Defaults/DefaultParkingLotImage.png"
+
+const defaultUserImgURL = "https://res.cloudinary.com/dlie9x7yk/image/upload/v1684584394/ParkPin/Defaults/DefaultUserImage.jpg"
+
 // Delete images from cloundinary
 const clearLotPhotosFromCloudinary = async () => {
     const oldParkingLots = await ParkingLot.find();
@@ -112,6 +116,8 @@ const clearLotPhotosFromCloudinary = async () => {
 
     for (let parkingLot of oldParkingLots) {
         parkingLot.images.forEach(image => {
+            if (image.url == defaultLotImgURL) return;
+
             clearedLotPhotos.push(cloudinary.uploader.destroy(image.filename));
         });
     }
@@ -128,6 +134,7 @@ const clearUserPhotosFromCloudinary = async () => {
 
     for (let user of oldUsers) {
         if (!user.image) continue;
+        if (user.image.url == defaultUserImgURL) continue;
 
         clearedUserPhotos.push(cloudinary.uploader.destroy(user.image.filename));
     }

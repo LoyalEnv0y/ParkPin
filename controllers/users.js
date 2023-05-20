@@ -22,7 +22,11 @@ module.exports.register = async (req, res) => {
 			phoneNumber, citizenID
 		} = user);
 
-		newUser.image = { url: req.file.path, filename: req.file.filename };
+		if (req.file) {
+			newUser.image = { url: req.file.path, filename: req.file.filename };
+		} else {
+			newUser.image.url = "https://res.cloudinary.com/dlie9x7yk/image/upload/v1684584394/ParkPin/Defaults/DefaultUserImage.jpg"
+		}
 
 		const registeredUser = await User.register(newUser, user.password);
 		req.login(registeredUser, (err) => {
