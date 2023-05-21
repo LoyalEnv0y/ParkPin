@@ -31,6 +31,11 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+// MapBox
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
+
 // Returns a random value from a given object or array
 const getSampleFromData = data => (data[getRandNum(data.length)]);
 
@@ -144,6 +149,16 @@ const clearUserPhotosFromCloudinary = async () => {
     return Promise.all(clearedUserPhotos);
 }
 
+// Get Geolocation data from mapbox
+const getGeolocation = async location => {
+    const geoData = await geocoder.forwardGeocode({
+        query: location,
+        limit: 1
+    }).send();
+
+    return geoData.body.features[0].geometry;
+}
+
 // Creates randomly picked hour - price pairs.
 const createRandomPrices = () => {
     let randStartingPrice = getRandNum(20, 1);
@@ -239,6 +254,8 @@ const resetParkingLots = async () => {
             priceTable: createRandomPrices(),
             images: await seedImgs()
         })
+
+        newLot.geometry = await getGeolocation(newLot.location);
 
         // Assign the lot to testUser but saves the user only after the slot has been saved
         testUser.parkingLots.push(newLot._id);

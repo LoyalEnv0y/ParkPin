@@ -12,7 +12,7 @@ const ImageSchema = new Schema({
     filename: String
 })
 
-ImageSchema.virtual('thumbnail').get(function() {
+ImageSchema.virtual('thumbnail').get(function () {
     let thumbnail = this.url && this.url.replace('/upload', '/upload/w_200')
     return thumbnail;
 });
@@ -36,6 +36,18 @@ const parkingLotSchema = new Schema({
     location: {
         type: String,
         required: true,
+    },
+
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
     },
 
     floors: [

@@ -6,10 +6,16 @@ const AppError = require('../utils/AppError');
 const floorsAndSlots = require('../utils/floorsAndSlots');
 const hourPricePairs = require('../utils/hourPricePairs');
 
+// Cloudinary
+const { cloudinary } = require('../cloudinary/parkingLotStorage');
+
+// MapBox
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
+
 // Data
 const CitiesAndProvinces = require('../seeds/CitiesAndProvinces.json');
-
-const { cloudinary } = require('../cloudinary/parkingLotStorage');
 
 const defaultImgURL = "https://res.cloudinary.com/dlie9x7yk/image/upload/v1684585107/ParkPin/Defaults/DefaultParkingLotImage.png"
 const defaultImgFilename = "ParkPin/Defaults/DefaultParkingLotImage"
@@ -64,9 +70,15 @@ module.exports.createParkingLot = async (req, res) => {
 
 	const location = parkingLot.city + ' - ' + parkingLot.province;
 
+	const geoData = await geocoder.forwardGeocode({
+		query: location,
+		limit: 1
+	}).send();
+
 	const newLot = new ParkingLot({
 		name: (parkingLot.name) ? parkingLot.name : location + ' Parking Lot',
 		location: location,
+		geometry: geoData.body.features[0].geometry,
 		owner: req.user._id
 	});
 

@@ -34,6 +34,8 @@
     <% } %>
 </div>
 
+<div id='map' style='width: 600px; height: 300px;'></div>
+
 <h4>Listed by <%= (parkingLot.owner) ? parkingLot.owner.username : 'N/A' %></h4>
 
 <select name="" id="">
@@ -157,3 +159,11 @@
         padding-left: 9px;
     }
 </style>
+
+<script>
+    const mapToken = '<%- process.env.MAPBOX_TOKEN %>'
+    const parkingLot = <%- JSON.stringify(parkingLot) %>
+</script>
+
+
+<script src="/js/showPageMapBox.js"></script>
