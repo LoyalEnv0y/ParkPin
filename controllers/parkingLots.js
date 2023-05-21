@@ -25,7 +25,7 @@ module.exports.renderIndex = async (req, res) => {
 
 	res.render('parkingLots/index', {
 		title: 'ParkPin | All',
-		ParkingLots: allParkingLots
+		parkingLots: allParkingLots
 	});
 };
 

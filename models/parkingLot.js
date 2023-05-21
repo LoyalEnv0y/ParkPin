@@ -6,6 +6,7 @@ const Floor = require('./floor');
 const Slot = require('./slot');
 const Review = require('./review');
 
+const opts = { toJSON: { virtuals: true } };
 
 const ImageSchema = new Schema({
     url: String,
@@ -77,6 +78,10 @@ const parkingLotSchema = new Schema({
             ref: 'Review'
         },
     ]
+}, opts);
+
+parkingLotSchema.virtual('properties.popUpMarkup').get(function () {
+    return `<a href="/parkingLots/${this._id}">${this.name}</a>`
 });
 
 parkingLotSchema.post('findOneAndDelete', async function (data) {

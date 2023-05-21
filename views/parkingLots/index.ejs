@@ -1,8 +1,10 @@
 <% layout('layouts/boilerplate') %>
 
+<div id="map" style="width: 100%; height: 500px;"></div>
+
 <h1>All ParkingLots</h1>
 
-<% for(let parkingLot of ParkingLots) { %>
+<% for(let parkingLot of parkingLots) { %>
 <h1><%= parkingLot.name %></h1>
 
 <h4><%= parkingLot.location %></h4>
@@ -13,8 +15,14 @@
     <button class="btn btn-success">View</button>
 </a>
 
-<img src="<%= parkingLot.images[0].url %>"
-    alt="Parking lot picture" class="d-block" width="500px">
+<img src="<%= parkingLot.images[0].url %>" alt="Parking lot picture" class="d-block" width="500px">
 <hr>
 <br>
 <% } %>
+
+<script>
+    const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
+    const parkingLots = { features: <%- JSON.stringify(parkingLots) %>}
+</script>
+
+<script src="js/clusterMap.js"></script>

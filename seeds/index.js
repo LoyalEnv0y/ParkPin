@@ -232,15 +232,15 @@ const createRandomSlots = async (slotCount, floorNum, parkingLot) => {
 Assigns all those newly created parking lots to testUser. */
 const resetParkingLots = async () => {
     // Clear old lots
-    await clearLotPhotosFromCloudinary();
-    await ParkingLot.deleteMany();
-    await Floor.deleteMany();
-    await Slot.deleteMany();
-    await HourPricePair.deleteMany();
-    await Review.deleteMany();
+    // await clearLotPhotosFromCloudinary();
+    // await ParkingLot.deleteMany();
+    // await Floor.deleteMany();
+    // await Slot.deleteMany();
+    // await HourPricePair.deleteMany();
+    // await Review.deleteMany();
 
     // Create new lots 
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 8; i++) {
         // Get new lot's data
         const randCity = getSampleFromData(Object.keys(CitiesAndProvinces));
         const randProvince = getSampleFromData(CitiesAndProvinces[randCity]);
