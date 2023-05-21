@@ -65,7 +65,6 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-
 // Middleware
 app.use((req, res, next) => {
 	res.locals.success = req.flash('success');
@@ -82,9 +81,11 @@ app.get('/', (req, res) => {
 const parkingLotRoutes = require('./routes/parkingLots');
 const reviewsRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users');
+const carRoutes = require('./routes/cars');
 
 app.use('/parkingLots', parkingLotRoutes);
 app.use('/parkingLots/:id/reviews', reviewsRoutes);
+app.use('/cars', carRoutes);
 app.use('/', userRoutes);
 
 // *********************************

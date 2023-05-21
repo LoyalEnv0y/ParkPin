@@ -1,0 +1,66 @@
+<% layout('layouts/boilerplate') %>
+
+<h1>Add A Car</h1>
+
+<div class="row">
+	<h1 class='text-center'>Register a New Car!</h1>
+
+	<div class="col-6 offset-3">
+		<form action="/cars" method="POST" novalidate class="validated-form">
+
+			<div class="mb-3">
+				<label class="form-label" for="brand">Brand</label>
+				<select class="form-control" id="brand" name="car[brand]" required> 
+					<% for() { %>
+					
+					<% } %>
+					<option value=""></option>
+				</select>
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label" for="city">City</label>
+				<select class="form-control" type="text" id="city" name="parkingLot[city]" required>
+					<% for(let city in cities) { %>
+					<option value="<%= city %>"><%= city %></option>
+					<% } %>
+				</select>
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label" for="province">Province</label>
+				<select class="form-control" type="text" id="province" name="parkingLot[province]" required>
+					<% for(let province of cities.Adana) { %>
+					<option value="<%= province %>"><%= province %></option>
+					<% } %>
+				</select>
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label" for="image">Images</label>
+				<input class="form-control" type="file" id="image" name="image" multiple>
+				<div class="valid-feedback">Looks good!</div>
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label" for="floors">Floor Number - Slot Count</label>
+				<textarea class="form-control" name="parkingLot[floors]" id="floors"
+					placeholder="Please write the floors as <FloorNumber> - <SlotNumber> and separate with a comma. For example 1 - 20, 2 - 21, 3 - 25"
+					required></textarea>
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label" for="priceTable">Price Table</label>
+				<textarea class="form-control" name="parkingLot[priceTable]" id="priceTable"
+					placeholder="Please write your pricing as <StartingHour> - <EndingHour> = <Price> separate with comma and if you have prices based on days set the starting hour to 0 and ending hour to 24 or 48 etc. For example 0 - 2 = 20, 2 - 4 = 25, 0 - 24 = 100"
+					required></textarea>
+			</div>
+
+			<div class="mb-3">
+				<button class="btn btn-success">Add ParkingLot</button>
+			</div>
+		</form>
+
+		<a href="/parkingLot">All ParkingLots</a>
+	</div>
+</div>
