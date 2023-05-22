@@ -6,7 +6,7 @@ const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 
 // Middleware
-const { isLoggedIn, isCarOwner, validateCar } = require('../middleware')
+const { isLoggedIn, isCarOwner, validate } = require('../middleware')
 
 // Controllers
 const cars = require('../controllers/cars');
@@ -31,12 +31,12 @@ router.route('/:id')
 	.put(
 		isLoggedIn,
 		catchAsync(isCarOwner),
-		validateCar,
+		validate('Car'),
 		cars.updateCar
 	)
 	.delete(
 		isLoggedIn,
-		validateCar,
+		validate('Car'),
 		catchAsync(cars.deleteCar)
 	)
 

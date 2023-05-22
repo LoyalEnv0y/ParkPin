@@ -52,42 +52,31 @@ module.exports.isCarOwner = async (req, res, next) => {
 	next();
 }
 
-module.exports.validateCar = (req, res, next) => {
-	const { error } = carJOI.validate(req.body);
-	if (error) {
-		const msg = error.details.map(el => el.message).join(',');
-		throw new AppError(msg, 400);
-	} else {
-		next();
-	}
-}
+module.exports.validate = (modelName) => {
+	return (req, res, next) => {
+		let error = "";
 
-module.exports.validateParkingLot = (req, res, next) => {
-	const { error } = parkingLotJOI.validate(req.body);
-	if (error) {
-		const msg = error.details.map(el => el.message).join(',');
-		throw new AppError(msg, 400);
-	} else {
-		next();
-	}
-}
+		switch (modelName) {
+			case 'Car':
+				error = carJOI.validate(req.body).error;
+				break;
+			case 'ParkingLot':
+				error = parkingLotJOI.validate(req.body).error;
+				break;
+			case 'Review':
+				error = reviewJOI.validate(req.body).error;
+				break;
+			case 'User':
+				error = userJOI.validate(req.body).error;
+				break;
+		}
 
-module.exports.validateReview = (req, res, next) => {
-	const { error } = reviewJOI.validate(req.body);
-	if (error) {
-		const msg = error.details.map(el => el.message).join(',');
-		throw new AppError(msg, 400);
-	} else {
-		next();
-	}
-}
-
-module.exports.validateUser = (req, res, next) => {
-	const { error } = userJOI.validate(req.body);
-	if (error) {
-		const msg = error.details.map(el => el.message).join(',');
-		throw new AppError(msg, 400);
-	} else {
-		next();
+		if (error) {
+			console.log(error);
+			const msg = error.details.map(el => el.message).join(',');
+			throw new AppError(msg, 400);
+		} else {
+			next();
+		}
 	}
 }

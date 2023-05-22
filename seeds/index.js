@@ -72,6 +72,8 @@ const resetUsers = async () => {
     // });
 
     // testUser = await newUser.save();
+
+    testUser = await User.findOne({username: 'Tester'});
 };
 
 // Gets random landscape oriented images from a collection on Unsplash
@@ -242,7 +244,7 @@ const resetParkingLots = async () => {
     // await Car.deleteMany();
 
     // Create new lots 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 25; i++) {
         // Get new lot's data
         const randCity = getSampleFromData(Object.keys(CitiesAndProvinces));
         const randProvince = getSampleFromData(CitiesAndProvinces[randCity]);

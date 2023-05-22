@@ -7,7 +7,7 @@ const catchAsync = require('../utils/catchAsync');
 const passport = require('passport')
 
 // Middleware
-const { validateUser, isLoggedIn } = require('../middleware');
+const { validate, isLoggedIn } = require('../middleware');
 
 // Controllers
 const users = require('../controllers/users');
@@ -31,7 +31,7 @@ router.route('/register')
 	.get(users.renderRegister)
 	.post(
 		upload.single('image'),
-		validateUser,
+		validate('User'),
 		catchAsync(users.register)
 	);
 

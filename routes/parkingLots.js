@@ -6,7 +6,7 @@ const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 
 // Middleware
-const { isLoggedIn, isAuthor, validateParkingLot } = require('../middleware');
+const { isLoggedIn, isAuthor, validate } = require('../middleware');
 
 // Controllers
 const parkingLots = require('../controllers/parkingLots')
@@ -21,7 +21,7 @@ router.route('/')
 	.post(
 		isLoggedIn,
 		upload.array('image'),
-		validateParkingLot,
+		validate('ParkingLot'),
 		catchAsync(parkingLots.createParkingLot)
 	);
 
@@ -37,7 +37,7 @@ router.route('/:id')
 		isLoggedIn,
 		catchAsync(isAuthor),
 		upload.array('image'),
-		validateParkingLot,
+		validate('ParkingLot'),
 		catchAsync(parkingLots.updateParkingLot)
 	)
 	.delete(
