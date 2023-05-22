@@ -10,12 +10,12 @@ const ImageSchema = new Schema({
     filename: String
 });
 
-ImageSchema.virtual('thumbnail').get(function() {
+ImageSchema.virtual('thumbnail').get(function () {
     let thumbnail = this.url && this.url.replace('/upload', '/upload/w_100')
     return thumbnail;
 });
 
-ImageSchema.virtual('avatar').get(function() {
+ImageSchema.virtual('avatar').get(function () {
     let thumbnail = this.url && this.url.replace('/upload', '/upload/w_50')
     return thumbnail;
 });
@@ -73,5 +73,12 @@ const UserSchema = new Schema({
 });
 
 UserSchema.plugin(passportLocalMongoose);
+
+UserSchema.post('findOneAndDelete', async function (data) {
+    if (data) {
+        await ParkingLot.deleteMany({ _id: { $in: data.parkingLots } });
+        await Car.deleteMany({ _id: { $in: data.cars } });
+    }
+});
 
 module.exports = mongoose.model('User', UserSchema);

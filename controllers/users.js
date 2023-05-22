@@ -26,10 +26,8 @@ module.exports.register = async (req, res) => {
 		} = user);
 
 		if (req.file) {
-			console.log("Here 1", req.file)
 			newUser.image = { url: req.file.path, filename: req.file.filename };
 		} else {
-			console.log("Here 2", newUser)
 			newUser.image = { url: defaultUserImgURL, filename: defaultUserImgFilename }
 		}
 

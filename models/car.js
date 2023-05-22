@@ -12,23 +12,13 @@ const carsSchema = new Schema({
         required: true,
     },
 
-    type: {
-        type: String,
-        enum: ['SUV',
-            'Hatchback',
-            'Crossover',
-            'Convertible',
-            'Sedan', 'Sport',
-            'Coupe', 'Minivan',
-            'Station Wagon',
-            'Pickup'
-        ],
-        default: 'SUV'
-    },
-
     hasLPG: {
         type: Boolean,
         required: true
+    },
+
+    description: {
+        type: String,
     },
 
     listedAt: {
@@ -48,7 +38,7 @@ const carsSchema = new Schema({
 
     parkedAt: {
         type: Date,
-    }
+    },
 });
 
 module.exports = mongoose.model('Car', carsSchema);

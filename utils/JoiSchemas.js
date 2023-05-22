@@ -36,3 +36,12 @@ module.exports.userJOI = Joi.object({
 		citizenID: Joi.string().regex(/^[0-9]{11}$/).required(),
 	}).required()
 });
+
+module.exports.carJOI = Joi.object({
+	car: Joi.object({
+		brand: Joi.string().required(),
+		model: Joi.string().required(),
+		hasLPG: Joi.string().valid('on', ''),
+		description: Joi.string()
+	}).required()
+});

@@ -1,16 +1,17 @@
 <% layout('layouts/boilerplate') %>
 
 <div class="row">
-	<h1 class='text-center'>Register a New Car!</h1>
+	<h1 class='text-center'>Edit Your Car</h1>
 
 	<div class="col-6 offset-3">
-		<form action="/cars" method="POST" novalidate class="validated-form">
+		<form action="/cars/<%= currentCar._id %>?_method=PUT" method="POST" novalidate class="validated-form">
 
 			<div class="mb-3">
 				<label class="form-label" for="brand">Brand</label>
 				<select class="form-control" id="brand" name="car[brand]" required>
 					<% for(let brand in cars) { %>
-					<option value="<%= brand %>"><%= brand %></option>
+					<option value="<%= brand %>" <%= (currentCar.brand == brand) ? 'selected' : '' %>><%= brand %>
+					</option>
 					<% } %>
 				</select>
 			</div>
@@ -19,13 +20,15 @@
 				<label class="form-label" for="model">Model</label>
 				<select class="form-control" type="text" id="model" name="car[model]" required>
 					<% for(let model of cars.Volvo) { %>
-					<option value="<%= model %>"><%= model %></option>
+					<option value="<%= model %>" <%= (currentCar.model == model) ? 'selected' : '' %>><%= model %>
+					</option>
 					<% } %>
 				</select>
 			</div>
 
 			<div class="mb-3">
-				<input class="form-check-input" type="checkbox" id="hasLPG" name="car[hasLPG]">
+				<input class="form-check-input" type="checkbox" id="hasLPG" name="car[hasLPG]"
+					<%= (currentCar.hasLPG) ? 'checked' : '' %>>
 				<label class="form-check-label" for="hasLPG">
 					Uses LPG
 				</label>
@@ -33,11 +36,12 @@
 
 			<div class="mb-3">
 				<label class="form-label" for="description">Description</label>
-				<textarea class="form-control" type="text" id="description" name="car[description]"></textarea>
+				<textarea class="form-control" type="text" id="description"
+					name="car[description]"><%= currentCar.description %></textarea>
 			</div>
 
 			<div class="mb-3">
-				<button class="btn btn-success">Add Car</button>
+				<button class="btn btn-success">Edit Car</button>
 			</div>
 		</form>
 

@@ -7,7 +7,7 @@ const catchAsync = require('../utils/catchAsync');
 const passport = require('passport')
 
 // Middleware
-const { validateUser, isLoggedIn, isAuthor } = require('../middleware');
+const { validateUser, isLoggedIn } = require('../middleware');
 
 // Controllers
 const users = require('../controllers/users');

@@ -40,6 +40,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Models
 const CitiesAndProvinces = require('./seeds/CitiesAndProvinces.json');
+const CarBrandsAndModels = require('./seeds/CarBrandsAndModels.json');
 
 // Mongoose
 const mongoose = require('mongoose');
@@ -93,6 +94,10 @@ app.use('/', userRoutes);
 // *********************************
 app.get('/citiesAndProvinces', (req, res) => {
 	res.json(CitiesAndProvinces);
+});
+
+app.get('/carBrandsAndModels', (req, res) => {
+	res.json(CarBrandsAndModels);
 });
 
 // Errors
