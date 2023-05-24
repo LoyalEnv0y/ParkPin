@@ -83,10 +83,21 @@ const UserSchema = new Schema({
 UserSchema.plugin(passportLocalMongoose);
 
 UserSchema.post('findOneAndDelete', async function (data) {
-    if (data) {
-        await ParkingLot.deleteMany({ _id: { $in: data.parkingLots } });
-        await Car.deleteMany({ _id: { $in: data.cars } });
-    }
+    if (!data) return;
+
+    await ParkingLot.deleteMany({ _id: { $in: data.parkingLots } });
+    await Car.deleteMany({ _id: { $in: data.cars } });
+
+    const unLikedReviews = []
+
+    data.likedReviews.forEach(review => {
+        if (review.votes < 1) return;
+
+        review.votes--;
+        unLikedReviews.push(review.save()); 
+    });
+
+    await Promise.all(unLikedReviews);
 });
 
 module.exports = mongoose.model('User', UserSchema);
