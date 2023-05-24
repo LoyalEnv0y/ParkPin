@@ -18,8 +18,8 @@
                 <label class="form-label" for="city">City</label>
                 <select class="form-control" type="text" id="city" name="parkingLot[city]" required>
                     <% for(let city in cities) { %>
-                    <option value="<%= city %>" <%= city === oldCity ? 'selected' : '' %>> <%= city %>
-                    </option>
+                        <option value="<%= city %>" <%= city === oldCity ? 'selected' : '' %>> <%= city %>
+                        </option>
                     <% } %>
                 </select>
             </div>
@@ -28,8 +28,8 @@
                 <label class="form-label" for="province">Province</label>
                 <select class="form-control" type="text" id="province" name="parkingLot[province]" required>
                     <% for(let province of cities[oldCity]) { %>
-                    <option value="<%= province %>" <%= province === oldProvince ? 'selected' : '' %>><%= province %>
-                    </option>
+                        <option value="<%= province %>" <%= province === oldProvince ? 'selected' : '' %>><%= province %>
+                        </option>
                     <% } %>
                 </select>
             </div>
@@ -41,14 +41,14 @@
 
             <div class="mb-3">
                 <% parkingLot.images.forEach((img, i) => { %>
-                <img src="<%= img.thumbnail %>" alt="image #<%= i+1 %>" class="img-thumbnail">
+                    <img src="<%= img.thumbnail %>" alt="image #<%= i+1 %>" class="img-thumbnail">
 
-                <div class="mb-3 form-check-inline">
-                    <input type="checkbox" class="form-check-input" id="image-<%= i %>" name="deleteImages[]"
-                        value="<%= img.filename %>">
+                    <div class="mb-3 form-check-inline">
+                        <input type="checkbox" class="form-check-input" id="image-<%= i %>" name="deleteImages[]"
+                            value="<%= img.filename %>">
 
-                    <label class="form-check-label" for="image-<%= i %>">Delete</label>
-                </div>
+                        <label class="form-check-label" for="image-<%= i %>">Delete</label>
+                    </div>
                 <% }) %>
             </div>
 

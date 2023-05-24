@@ -10,7 +10,7 @@
 				<label class="form-label" for="brand">Brand</label>
 				<select class="form-control" id="brand" name="car[brand]" required>
 					<% for(let brand in cars) { %>
-					<option value="<%= brand %>"><%= brand %></option>
+						<option value="<%= brand %>"><%= brand %></option>
 					<% } %>
 				</select>
 			</div>
@@ -19,7 +19,7 @@
 				<label class="form-label" for="model">Model</label>
 				<select class="form-control" type="text" id="model" name="car[model]" required>
 					<% for(let model of cars.Volvo) { %>
-					<option value="<%= model %>"><%= model %></option>
+						<option value="<%= model %>"><%= model %></option>
 					<% } %>
 				</select>
 			</div>

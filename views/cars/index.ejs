@@ -3,21 +3,21 @@
 <h1>Your Cars</h1>
 
 <% for(let car of user.cars) { %>
-<ul>
-	<li>Brand: <%= car.brand %></li>
-	<li>Model: <%= car.model %></li>
-	<li>Works with LPG: <%= car.hasLPG %></li>
-	<li>Listed at: <%= car.listedAt %></li>
-	<li>Description: <%= car.description %></li>
-</ul>
+	<ul>
+		<li>Brand: <%= car.brand %></li>
+		<li>Model: <%= car.model %></li>
+		<li>Works with LPG: <%= car.hasLPG %></li>
+		<li>Listed at: <%= car.listedAt %></li>
+		<li>Description: <%= car.description %></li>
+	</ul>
 
-<form action="/cars/<%= car._id %>?_method=DELETE" method="POST" class="d-inline">
-	<button class="btn btn-sm btn-danger">Delete</button>
-</form>
+	<form action="/cars/<%= car._id %>?_method=DELETE" method="POST" class="d-inline">
+		<button class="btn btn-sm btn-danger">Delete</button>
+	</form>
 
-<a href="/cars/<%= car._id %>/edit">
-	<button class="btn btn-sm btn-info">Edit</button>
-</a>
+	<a href="/cars/<%= car._id %>/edit">
+		<button class="btn btn-sm btn-info">Edit</button>
+	</a>
 <% } %>
 
 <a href="/cars/new" class="d-block mt-5">

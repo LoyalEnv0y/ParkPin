@@ -14,7 +14,7 @@
                 <label class="form-label" for="city">City</label>
                 <select class="form-control" type="text" id="city" name="parkingLot[city]" required>
                     <% for(let city in cities) { %>
-                    <option value="<%= city %>"><%= city %></option>
+                        <option value="<%= city %>"><%= city %></option>
                     <% } %>
                 </select>
             </div>
@@ -23,7 +23,7 @@
                 <label class="form-label" for="province">Province</label>
                 <select class="form-control" type="text" id="province" name="parkingLot[province]" required>
                     <% for(let province of cities.Adana) { %>
-                    <option value="<%= province %>"><%= province %></option>
+                        <option value="<%= province %>"><%= province %></option>
                     <% } %>
                 </select>
             </div>
