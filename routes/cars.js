@@ -18,6 +18,7 @@ router.route('/')
 	)
 	.post(
 		isLoggedIn,
+		validate('Car'),
 		catchAsync(cars.createCar)
 	)
 
@@ -36,7 +37,6 @@ router.route('/:id')
 	)
 	.delete(
 		isLoggedIn,
-		validate('Car'),
 		catchAsync(cars.deleteCar)
 	)
 

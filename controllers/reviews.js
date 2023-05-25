@@ -1,6 +1,7 @@
 // Models
 const ParkingLot = require('../models/parkingLot');
 const Review = require('../models/review');
+const User = require('../models/user');
 
 module.exports.createReview = async (req, res) => {
 	const id = req.params.id;
@@ -49,4 +50,28 @@ module.exports.deleteReview = async (req, res) => {
 
 	req.flash('success', 'Deleted the review!');
 	res.redirect(`/parkingLots/${id}#reviews`)
+}
+
+module.exports.toggleReview = async (req, res) => {
+	const { reviewId } = req.params;
+	const { userId, liked } = req.body;
+
+	const foundReview = await Review.findById(reviewId);
+	const foundUser = await User.findById(userId);
+
+	if (liked) {
+		foundReview.votes--;
+
+		await foundUser.updateOne(
+			{ $pull: { likedReviews: foundReview.id } }
+		)
+	} else {
+		foundReview.votes++;
+		foundUser.likedReviews.push(foundReview);
+	}
+
+	await foundReview.save();
+	await foundUser.save();
+
+	res.send('');
 }

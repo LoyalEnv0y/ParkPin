@@ -83,22 +83,13 @@ const parkingLotRoutes = require('./routes/parkingLots');
 const reviewsRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users');
 const carRoutes = require('./routes/cars');
+const dataRoutes = require('./routes/data');
 
 app.use('/parkingLots', parkingLotRoutes);
 app.use('/parkingLots/:id/reviews', reviewsRoutes);
 app.use('/cars', carRoutes);
 app.use('/', userRoutes);
-
-// *********************************
-// JSON Start
-// *********************************
-app.get('/citiesAndProvinces', (req, res) => {
-	res.json(CitiesAndProvinces);
-});
-
-app.get('/carBrandsAndModels', (req, res) => {
-	res.json(CarBrandsAndModels);
-});
+app.use('/data', dataRoutes);
 
 // Errors
 const AppError = require('./utils/AppError');

@@ -42,6 +42,6 @@ module.exports.carJOI = Joi.object({
 		brand: Joi.string().required(),
 		model: Joi.string().required(),
 		hasLPG: Joi.string().valid('on', ''),
-		description: Joi.string()
+		description: Joi.string().allow('')
 	}).required()
 });

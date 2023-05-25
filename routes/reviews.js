@@ -25,6 +25,12 @@ router.route('/:reviewId/edit')
         catchAsync(reviews.renderEdit)
     )
 
+router.route('/:reviewId/like')
+    .post(
+        isLoggedIn,
+        catchAsync(reviews.toggleReview),
+    );
+
 router.route('/:reviewId/')
     .put(
         isLoggedIn,

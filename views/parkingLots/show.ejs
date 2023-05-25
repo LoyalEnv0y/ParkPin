@@ -50,8 +50,6 @@
 
 <p>Listed since <%= new Date(parkingLot.createdAt).toDateString() %> </p>
 
-<%= console.log(parkingLot.floors) %>
-
 <% for(let floor of parkingLot.floors) { %>
     <h4>Slots for floor #<%= floor.floorNum %>:</h4>
         <table>
@@ -90,21 +88,30 @@
 
 <h4 id="reviews">Reviews:</h4>
 <% for(let review of parkingLot.reviews) { %>
-    <h6 class="d-inline">Submitted by <%= review.author.username %></h6>
-    <img class="rounded-circle" src="<%= review.author.image.avatar %>" alt="">
-    <h4>Title: <%= review.title %></h4>
+    <h6 class="d-inline">Submitted by
+         <strong><i><%= review.author.username %></i></strong> 
+    </h6>
 
-    <h4>Rating:</h4>
+    <img class="rounded-circle" src="<%= review.author.image.avatar %>" alt="">
+
     <p class="starability-result" data-rating="<%= review.rating %>">
         Rated: <%= review.rating %> stars
     </p>
 
+    <h4>Title: <%= review.title %></h4>
+
     <p>Body: <%= review.body %></p>
-    <p>Votes: <%= review.votes %></p>
+    <p class="d-inline review-<%= review._id %> ">
+        Votes: <span><%= review.votes %></span>
+    </p>
+
+    <button class="btn btn-sm btn-primary like-button rounded-pill"
+        data-review-id="<%= review._id %>" data-parkingLot-id="<%= parkingLot._id %>" data-user-id="<%= (currentUser) ? currentUser._id : '' %>" <%= (!currentUser) ? 'disabled' : '' %>>Like
+    </button>
 
     <% if (currentUser && review.author.equals(currentUser)) { %>
         <a href="/parkingLots/<%= parkingLot._id %>/reviews/<%= review._id %>/edit">
-            <button class="btn btn-info">Edit Review</button>
+            <button class="btn btn-info d-block mt-3">Edit Review</button>
         </a>
 
         <form action="/parkingLots/<%= parkingLot._id %>/reviews/<%= review._id %>?_method=DELETE" method="post">
@@ -169,3 +176,4 @@
 
 
 <script src="/js/showPageMapBox.js"></script>
+<script src="/js/likeReview.js"></script>

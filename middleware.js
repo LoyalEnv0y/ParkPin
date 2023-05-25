@@ -72,7 +72,6 @@ module.exports.validate = (modelName) => {
 		}
 
 		if (error) {
-			console.log(error);
 			const msg = error.details.map(el => el.message).join(',');
 			throw new AppError(msg, 400);
 		} else {

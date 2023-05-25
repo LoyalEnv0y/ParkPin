@@ -94,7 +94,7 @@ UserSchema.post('findOneAndDelete', async function (data) {
         if (review.votes < 1) return;
 
         review.votes--;
-        unLikedReviews.push(review.save()); 
+        unLikedReviews.push(review.save());
     });
 
     await Promise.all(unLikedReviews);
