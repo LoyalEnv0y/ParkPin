@@ -84,12 +84,14 @@ const reviewsRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users');
 const carRoutes = require('./routes/cars');
 const dataRoutes = require('./routes/data');
+const reservationRoutes = require('./routes/reservations');
 
 app.use('/parkingLots', parkingLotRoutes);
 app.use('/parkingLots/:id/reviews', reviewsRoutes);
 app.use('/cars', carRoutes);
 app.use('/', userRoutes);
 app.use('/data', dataRoutes);
+app.use('/parkingLots/:id/reservation', reservationRoutes);
 
 // Errors
 const AppError = require('./utils/AppError');

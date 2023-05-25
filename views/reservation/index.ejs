@@ -1,0 +1,69 @@
+<% layout('layouts/boilerplate') %>
+
+<h1>Make a reservation</h1>
+
+<h1><%= parkingLot.name %></h1>
+<h4><%= parkingLot.location %></h4>
+
+<div id="carouselIndicator" class="carousel slide w-50 carousel-fade">
+    <% if (parkingLot.images.length > 1) { %>
+        <div class="carousel-indicators">
+            <% for(let i = 0; i < parkingLot.images.length; i++) { %>
+                <button type="button" data-bs-target="#carouselIndicator" data-bs-slide-to="<%= i %>"
+                    class="<%= (i == 0) ? "active" : "" %>" aria-current="true" aria-label="Slide <%= i+1 %>">
+                </button>
+            <% } %>
+        </div>
+    <% } %>
+
+    <div class="carousel-inner">
+        <% parkingLot.images.forEach((img, i) =>  { %>
+            <div class="carousel-item <%= (i == 0) ? "active" : "" %>">
+                <img src="<%= img.url %>" class="d-block w-100" alt="ParkingLot Image">
+            </div>
+        <% }) %>
+    </div>
+
+    <% if (parkingLot.images.length > 1) { %>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselIndicator" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselIndicator" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    <% } %>
+</div>
+
+<div class="row">
+    <h1>Register a New Parking Lot!</h1>
+
+    <div class="col-6">
+        <form action="/parkingLots" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+
+            <% let i = 0; %>
+            <% for(let currTable of parkingLot.priceTable) { %>
+                <div class="mb-3">
+                    <input class="form-check-input" type="radio" id="pricePair-<%= i %>" name="reservation[pricePair]">
+                    <label class="form-check-label" for="pricePair-<%= i %>">
+                        <%= `${currTable.start} - ${currTable.end} -> ${currTable.price}` %>
+                    </label>
+                </div>
+                <% i++; %>
+            <% } %>
+            
+            <% for(let floor of parkingLot.floors) { %>
+                
+            <% } %>
+
+
+            <div class="mb-3">
+                <button class="btn btn-success">Add ParkingLot</button>
+            </div>
+        </form>
+
+        <a href="/parkingLot">All ParkingLots</a>
+    </div>
+</div>
