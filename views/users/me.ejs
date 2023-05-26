@@ -1,11 +1,27 @@
 <% layout('layouts/boilerplate') %>
 
-<h1>Hi <%= currentUser.username %></h1>
+<h1>Hi <%= user.username %></h1>
 
-<img src="<%= currentUser.image.thumbnail %>" alt="">
+<img src="<%= user.image.thumbnail %>" alt="">
+<%= console.log(user) %>
 
 <ul>
-	<li>Email: <%= currentUser.email %></li>
-	<li>Birth date: <%= currentUser.birthDate %></li>
-	<li>Phone Number: <%= currentUser.phoneNumber %></li>
+	<li>Email: <%= user.email %></li>
+	<li>Birth date: <%= user.birthDate %></li>
+	<li>Phone Number: <%= user.phoneNumber %></li>
 </ul>
+
+<h1>Your Reservations: </h1>
+
+<% for(let stay of user.stays) { %>
+	<ul>
+		<li> <img src="<%=  stay.place.images[0].thumbnail %>" alt=""> </li>
+		<li> Car: <%= `${stay.car.brand} - ${stay.car.model}` %></li>
+		<li> Status: <%= (stay.isActive) ? 'Active' : 'Inactive' %></li>
+		<li> Fee: <%= stay.fee %> </li>
+		<li> BookedAt: <%= stay.bookedAt %> </li>
+		<li> ReservedFor: <%= stay.reservedFor %> </li>
+	</ul>
+
+	<hr style="width: 300px;">
+<% } %>

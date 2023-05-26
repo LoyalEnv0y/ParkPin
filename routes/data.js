@@ -14,4 +14,7 @@ router.route('/carBrandsAndModels')
 router.route('/reviewLikeCheck')
 	.post(catchAsync(data.reviewIsLikedBy))
 
+router.route('/findFloorById/:id')
+	.get(catchAsync(data.getFloorById))
+
 module.exports = router;

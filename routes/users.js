@@ -38,7 +38,7 @@ router.route('/register')
 router.route('/me')
 	.get(
 		isLoggedIn,
-		users.renderMe
+		catchAsync(users.renderMe)
 	);
 
 router.route('/logout')

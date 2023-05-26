@@ -1,7 +1,7 @@
 const ParkingLot = require('./models/parkingLot');
 const Review = require('./models/review');
 const Car = require('./models/car');
-const { parkingLotJOI, reviewJOI, userJOI, carJOI } = require('./utils/JoiSchemas');
+const { parkingLotJOI, reviewJOI, userJOI, carJOI, reservationJOI } = require('./utils/JoiSchemas');
 const AppError = require('./utils/AppError');
 
 module.exports.isLoggedIn = (req, res, next) => {
@@ -68,6 +68,9 @@ module.exports.validate = (modelName) => {
 				break;
 			case 'User':
 				error = userJOI.validate(req.body).error;
+				break;
+			case 'Reservation':
+				error = reservationJOI.validate(req.body).error;
 				break;
 		}
 

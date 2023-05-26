@@ -50,32 +50,6 @@
 
 <p>Listed since <%= new Date(parkingLot.createdAt).toDateString() %> </p>
 
-<% for(let floor of parkingLot.floors) { %>
-    <h4>Slots for floor #<%= floor.floorNum %>:</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>Availability</th>
-                    <th>Occupied By</th>
-                    <th>Floor Number</th>
-                    <th>Located At</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <% for(let slot of floor.slots) { %>
-                    <tr>
-                        <th><%= slot.isFull %></th>
-                        <th><%= slot.occupierCar %></th>
-                        <th><%= slot.floorNum %></th>
-                        <th><%= slot.locatedAt.location %></th>
-                    </tr>
-                <% } %>
-            </tbody>
-        </table>
-    <br>
-<% } %>
-
 <% if (currentUser && parkingLot.owner.equals(currentUser)) { %>
     <a href="/parkingLots/<%= parkingLot._id %>/edit">
         <button class="btn btn-info">Edit Lot</button>
@@ -86,7 +60,7 @@
     </form>
 <% } %>
 
-// TODO: add if (currentUser) here
+<!-- TODO: add if (currentUser) here -->
     <a href="/parkingLots/<%= parkingLot._id %>/reservation">
         <button class="btn btn-lg btn-primary">Make a reservation</button>
     </a>
@@ -156,24 +130,6 @@
         <p class="text-danger">Please sign in to leave a review.</p>
     <% } %>
 </form>
-
-
-
-<style>
-    th,
-    td {
-        border: 1px solid black;
-        width: 100px;
-    }
-
-    th {
-        text-align: center;
-    }
-
-    td {
-        padding-left: 9px;
-    }
-</style>
 
 <script>
     const mapToken = '<%- process.env.MAPBOX_TOKEN %>'

@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const Car = require('./car');
 const ParkingLot = require('./parkingLot');
 const Review = require('./review');
+const Stay = require('./stay');
 
 const passportLocalMongoose = require('passport-local-mongoose');
 
@@ -76,6 +77,13 @@ const UserSchema = new Schema({
         {
             type: Schema.Types.ObjectId,
             ref: 'Review'
+        }
+    ],
+
+    stays: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Stay'
         }
     ]
 });

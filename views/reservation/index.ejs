@@ -1,5 +1,7 @@
 <% layout('layouts/boilerplate') %>
 
+<link rel="stylesheet" href="/css/floor-slot-display.css">
+
 <h1>Make a reservation</h1>
 
 <h1><%= parkingLot.name %></h1>
@@ -41,29 +43,74 @@
     <h1>Register a New Parking Lot!</h1>
 
     <div class="col-6">
-        <form action="/parkingLots" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+        <form action="/parkingLots/<%= parkingLot._id %>/reservation" method="POST" novalidate class="validated-form" id="reserve-form">
 
+            <h2>Choose a price:</h2>
             <% let i = 0; %>
             <% for(let currTable of parkingLot.priceTable) { %>
                 <div class="mb-3">
-                    <input class="form-check-input" type="radio" id="pricePair-<%= i %>" name="reservation[pricePair]">
+                    <input class="form-check-input" type="radio" id="pricePair-<%= i %>" name="reservation[pricePairId]" value="<%= currTable._id %>">
                     <label class="form-check-label" for="pricePair-<%= i %>">
                         <%= `${currTable.start} - ${currTable.end} -> ${currTable.price}` %>
                     </label>
                 </div>
                 <% i++; %>
             <% } %>
-            
-            <% for(let floor of parkingLot.floors) { %>
-                
-            <% } %>
 
+            <h2>Choose a slot:</h2>
+            <div class="slot-map mb-3">
+                <div class="slots-display">
+                    <% let j = 0; %>
+                    <% for(let slot of parkingLot.floors[0].slots) { %>
+                        <button class="slot-button" <%= (slot.isFull) ? 'disabled' : '' %> type="button" data-slot-id="<%= slot._id %>">
+                            <div class="slot <%= (slot.isFull) ? 'unavailable' : 'available' %> ">
+                                <span class="slot-num"><%= j + 1 %></span>
+                            </div>
+                            <% j++ %>
+                        </button>
+                    <% } %>
+                </div>
+            
+                <div class="floor-display">
+                    <% for(let floor of parkingLot.floors) { %>
+                        <div class="floor">
+                            <button class="floor-button" type="button" data-floor-id="<%= floor._id %>">
+                                <span clasS="floor-num">
+                                    <%= floor.floorNum %>
+                                </span>
+                            </button>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <h2>Choose your vehicle</h2>
+            <% let k = 0; %>
+            <div class="mb-3">
+                <% for(let car of user.cars) { %>
+                    <input class="form-check-input" type="radio" id="car-<%= k %>" name="reservation[carId]" value="<%= car._id %>">
+                    <label class="form-check-label" for="car-<%= k %>">
+                        <%= `${car.brand} - ${car.model}` %>
+                    </label>
+                    <% k++; %>
+                <% } %>
+            </div>
+
+            <h2>When will you at the parking lot</h2>
+            <div class="mb-3">
+                <input class="form-control" type="time" id="time" name="reservation[time]">
+                <label class="form-check-label" for="time">
+                </label>
+            </div>
 
             <div class="mb-3">
-                <button class="btn btn-success">Add ParkingLot</button>
+                <button class="btn btn-success">Reserve</button>
             </div>
         </form>
 
-        <a href="/parkingLot">All ParkingLots</a>
+        <a href="/parkingLots/<%= parkingLot._id %>">Go Back</a>
     </div>
 </div>
+
+<script>const currentLot = <%- JSON.stringify(parkingLot) %></script>
+<script src="/js/floorSlotButtons.js"></script>

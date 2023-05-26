@@ -47,8 +47,20 @@ module.exports.register = async (req, res) => {
 	}
 }
 
-module.exports.renderMe = (req, res) => {
-	res.render('users/me', { title: 'ParkPin | Profile' });
+module.exports.renderMe = async (req, res) => {
+	const user = await User.findById(req.user._id)
+		.populate({
+			path: 'stays',
+			populate: [
+				{ path: 'place' },
+				{ path: 'car' },
+			]
+		})
+
+	res.render('users/me', {
+		title: 'ParkPin | Profile',
+		user
+	});
 }
 
 module.exports.logout = (req, res) => {

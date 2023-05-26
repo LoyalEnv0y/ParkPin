@@ -1,5 +1,6 @@
 const Review = require('../models/review')
 const User = require('../models/user');
+const Floor = require('../models/floor');
 
 const CitiesAndProvinces = require('../seeds/CitiesAndProvinces.json');
 const CarBrandsAndModels = require('../seeds/CarBrandsAndModels.json');
@@ -21,4 +22,11 @@ module.exports.reviewIsLikedBy = async (req, res) => {
 	const liked = foundUser.likedReviews.includes(foundReview._id);
 
 	res.json({ liked });
+}
+
+module.exports.getFloorById = async (req, res) => {
+	const { id } = req.params;
+	const foundFloor = await Floor.findById(id).populate('slots');
+
+	res.json(foundFloor);
 }

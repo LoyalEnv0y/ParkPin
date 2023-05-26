@@ -45,3 +45,12 @@ module.exports.carJOI = Joi.object({
 		description: Joi.string().allow('')
 	}).required()
 });
+
+module.exports.reservationJOI = Joi.object({
+	reservation: Joi.object({
+		pricePairId: Joi.string().required(),
+		slotId: Joi.string().required(),
+		carId: Joi.string().required(),
+		time: Joi.string().required(),
+	}).required()
+});

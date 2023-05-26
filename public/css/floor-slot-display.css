@@ -1,0 +1,99 @@
+.slots-display {
+	width: 600px;
+	min-height: 300px;
+
+	border: 1px solid black;
+	border-radius: 5px;
+
+	padding: 1% 0%;
+
+	display: flex;
+	align-items: start;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.slot {
+	width: 60px;
+	height: 60px;
+
+	border: 3px solid black;
+	border-radius: 10px;
+
+	margin: 1%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	background-color: rgb(221, 221, 221);
+
+	cursor: pointer;
+}
+
+.slot-num {
+	font-size: 25px;
+	font-weight: 700;
+}
+
+.available {
+	color: rgb(7, 124, 7);
+	border-color: rgb(7, 124, 7);
+	background-color: rgb(189, 238, 189);
+}
+
+.available:hover {
+	background-color: rgb(97, 184, 97);
+}
+
+.unavailable {
+	color: rgb(255, 53, 53);
+	border-color: rgb(255, 53, 53);
+	background-color: rgb(238, 189, 189);
+	cursor: not-allowed
+}
+
+.floor-display {
+	width: 600px;
+	min-height: 60px;
+
+	border: 1px solid black;
+	border-radius: 5px;
+
+	margin-top: 5px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.floor {
+	width: 40px;
+	height: 40px;
+
+	border: 2px solid black;
+	border-radius: 5px;
+
+	margin: 1%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	background-color: rgb(221, 221, 221);
+
+	cursor: pointer;
+}
+
+.floor-num {
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.slot-button,
+.floor-button {
+	background: none;
+	border: none;
+	cursor: pointer;
+}
