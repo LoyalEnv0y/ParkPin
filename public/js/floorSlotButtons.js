@@ -1,7 +1,7 @@
 const slotsDisplay = document.querySelector('.slots-display');
 
-const floorButtons = document.querySelectorAll('.floor-button');
 let slotButtons = document.querySelectorAll('.slot-button');
+const floorButtons = document.querySelectorAll('.floor-button');
 
 let reserveForm = document.querySelector('#reserve-form');
 
@@ -26,7 +26,12 @@ const setSlotButtons = () => {
 
 	slotButtons.forEach((btn) => {
 		btn.addEventListener('click', () => {
+			slotButtons.forEach((btn) => {
+				btn.classList.remove('selected-button');
+			});
+		
 			selectedSlotId = btn.getAttribute('data-slot-id');
+			btn.classList.add('selected-button');
 		})
 	})
 }
@@ -34,11 +39,16 @@ setSlotButtons();
 
 floorButtons.forEach(btn => {
 	btn.addEventListener('click', async () => {
+		floorButtons.forEach((btn) => {
+			btn.classList.remove('selected-button');
+		});
+		btn.classList.add('selected-button');
+
 		const newFloorId = btn.getAttribute('data-floor-id');
 		if (selectedFloorId == newFloorId) return;
 
-		selectedFloorId = btn.getAttribute('data-floor-id');
-
+		selectedFloorId = newFloorId;
+		
 		const selectedFloor = await findFloor()
 		renderSelectedFloor(selectedFloor);
 		setSlotButtons();
@@ -70,21 +80,15 @@ const renderSelectedFloor = (selectedFloor) => {
 		slotButtons.forEach(button => button.remove());
 
 		const newLotButton = document.createElement('button');
-		newLotButton.classList.add('slot-button');
+		newLotButton.classList.add(
+			'slot-button',
+			'slot', (curSlot.isFull) ? 'unavailable' : 'available'
+		);
 		newLotButton.setAttribute('type', 'button');
 		newLotButton.setAttribute('data-slot-id', curSlot._id);
 		newLotButton.disabled = curSlot.isFull
+		newLotButton.innerText = (i + 1);
 
-		const newSlotDiv = document.createElement('div');
-		newSlotDiv.classList
-			.add('slot', (curSlot.isFull) ? 'unavailable' : 'available')
-
-		const newSlotNumSpan = document.createElement('span');
-		newSlotNumSpan.classList.add('slot-num');
-		newSlotNumSpan.innerText = (i + 1);
-
-		newSlotDiv.appendChild(newSlotNumSpan);
-		newLotButton.appendChild(newSlotDiv);
 		slotsDisplay.appendChild(newLotButton);
 	}
 }

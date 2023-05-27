@@ -13,7 +13,7 @@
 	flex-wrap: wrap;
 }
 
-.slot {
+.slot-button {
 	width: 60px;
 	height: 60px;
 
@@ -29,9 +29,7 @@
 	background-color: rgb(221, 221, 221);
 
 	cursor: pointer;
-}
 
-.slot-num {
 	font-size: 25px;
 	font-weight: 700;
 }
@@ -42,7 +40,7 @@
 	background-color: rgb(189, 238, 189);
 }
 
-.available:hover {
+.available:hover:not(.selected-button) {
 	background-color: rgb(97, 184, 97);
 }
 
@@ -68,7 +66,7 @@
 	flex-wrap: wrap;
 }
 
-.floor {
+.floor-button {
 	width: 40px;
 	height: 40px;
 
@@ -84,16 +82,24 @@
 	background-color: rgb(221, 221, 221);
 
 	cursor: pointer;
-}
 
-.floor-num {
 	font-size: 20px;
 	font-weight: 600;
 }
 
-.slot-button,
-.floor-button {
-	background: none;
-	border: none;
-	cursor: pointer;
+.selected-button {
+	position: relative;
+
+	transition: 150ms;
+	transform: translateY(-5px);
+}
+
+.selected-button.slot-button {
+	background-color: rgb(73, 212, 73);
+	box-shadow: -1px 1px 5px 0px rgb(23, 97, 33)
+}
+
+.selected-button.floor-button {
+	background-color: rgb(156, 156, 156);
+	box-shadow: -1px 1px 5px 0px rgb(39, 41, 39)
 }

@@ -62,24 +62,22 @@
                 <div class="slots-display">
                     <% let j = 0; %>
                     <% for(let slot of parkingLot.floors[0].slots) { %>
-                        <button class="slot-button" <%= (slot.isFull) ? 'disabled' : '' %> type="button" data-slot-id="<%= slot._id %>">
-                            <div class="slot <%= (slot.isFull) ? 'unavailable' : 'available' %> ">
-                                <span class="slot-num"><%= j + 1 %></span>
-                            </div>
-                            <% j++ %>
+                        <button 
+                        class="slot-button <%= (slot.isFull) ? 'unavailable' : 'available' %>"
+                        type="button"
+                        data-slot-id="<%= slot._id %>" <%= (slot.isFull) ? 'disabled' : '' %>>
+
+                            <%= j + 1 %>
                         </button>
+                        <% j++ %>
                     <% } %>
                 </div>
             
                 <div class="floor-display">
                     <% for(let floor of parkingLot.floors) { %>
-                        <div class="floor">
-                            <button class="floor-button" type="button" data-floor-id="<%= floor._id %>">
-                                <span clasS="floor-num">
-                                    <%= floor.floorNum %>
-                                </span>
-                            </button>
-                        </div>
+                        <button class="floor-button" type="button" data-floor-id="<%= floor._id %>">
+                            <%= floor.floorNum %>
+                        </button>
                     <% } %>
                 </div>
             </div>
