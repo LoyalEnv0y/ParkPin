@@ -12,7 +12,6 @@ const slotsSchema = new Schema({
     occupierCar: {
         type: Schema.Types.ObjectId,
         ref: 'Car',
-        default: null,
     },
 
     floorNum: {

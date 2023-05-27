@@ -6,7 +6,11 @@ const carsBrandsAndModels = require('../seeds/CarBrandsAndModels.json');
 
 module.exports.renderIndex = async (req, res) => {
 	const user = await User.findById(req.user._id)
-		.populate('cars');
+		.populate({
+			path: 'cars',
+			populate: { path: 'parkedIn' }
+		});
+
 	res.render('cars/index', {
 		title: 'ParkPin | Your Cars',
 		user

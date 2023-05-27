@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const User = require('../models/user');
 const ParkingLot = require('../models/parkingLot');
 const Car = require('../models/car');
+const Slot = require('../models/slot');
 
 const staySchema = new Schema({
     user: {
@@ -21,9 +22,15 @@ const staySchema = new Schema({
         ref: 'Car',
     },
 
-    isActive: {
-        type: Boolean,
-        default: false,
+    slot: {
+        type: Schema.Types.ObjectId,
+        ref: 'Slot'
+    },
+
+    status: {
+        type: String,
+        enum: ['Inactive', 'Active', 'Expired'],
+        default: 'Inactive',
     },
 
     fee: {
@@ -40,15 +47,13 @@ const staySchema = new Schema({
 		type: Date,
 	},
 
-    enteredAt: {
+    activatedAt: {
         type: Date,
     },
 
-    departureAt: {
+    deactivatedAt: {
         type: Date,
     },
-
-
 });
 
 module.exports = mongoose.model('Stay', staySchema);

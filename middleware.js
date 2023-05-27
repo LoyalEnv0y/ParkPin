@@ -1,6 +1,9 @@
 const ParkingLot = require('./models/parkingLot');
 const Review = require('./models/review');
 const Car = require('./models/car');
+const User = require('./models/user');
+const Stay = require('./models/stay');
+
 const { parkingLotJOI, reviewJOI, userJOI, carJOI, reservationJOI } = require('./utils/JoiSchemas');
 const AppError = require('./utils/AppError');
 
@@ -47,6 +50,36 @@ module.exports.isCarOwner = async (req, res, next) => {
 	if (!foundCar.owner.equals(req.user._id)) {
 		req.flash('error', 'You do not have the permission to do that!');
 		return res.redirect(`/cars`);
+	}
+
+	next();
+}
+
+module.exports.isReserver = async (req, res, next) => {
+	const {stayId} = req.params;
+	
+	const reservation = await Stay.findById(stayId);
+	const user = await User.findById(req.user._id);
+
+	if (!user.stays.includes(reservation._id)) {
+		req.flash('error', 'You cannot modify a reservation you didn\'t make');
+		return res.redirect('/me');
+	}
+
+	next();
+}
+
+module.exports.isSlotAvailable = async (req, res, next) => {
+	const {id: lotId, stayId} = req.params;
+	const foundParkingLot = await ParkingLot.findById(lotId);
+	const foundReservation = await Stay.findById(stayId).populate('slot');
+
+	if (!foundParkingLot.available) {
+		req.flash('error', 'You cannot reserve a slot in an unavailable parking lot');
+		return res.redirect(`/parkingLots/${foundParkingLot._id}`);
+	} else if (foundReservation.slot.isFull) {
+		req.flash('error', 'That slot is already filled up');
+		return res.redirect(`/parkingLots/${foundParkingLot._id}`)
 	}
 
 	next();

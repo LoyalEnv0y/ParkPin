@@ -9,6 +9,10 @@
 		<li>Works with LPG: <%= car.hasLPG %></li>
 		<li>Listed at: <%= car.listedAt %></li>
 		<li>Description: <%= car.description %></li>
+
+		<% if (car.parkedIn) { %>
+			<li>Parked In: <%= car.parkedIn.name %> at <%= car.parkedAt %> </li>
+		<% } %>
 	</ul>
 
 	<form action="/cars/<%= car._id %>?_method=DELETE" method="POST" class="d-inline">

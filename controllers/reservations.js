@@ -43,32 +43,98 @@ module.exports.createReservation = async (req, res) => {
 		minutes
 	);
 
-	await Slot.findByIdAndUpdate(
-		slotId,
-		{ isFull: true }
-	);
-
-	await Car.findByIdAndUpdate(
-		carId,
-		{ parkedIn: id }
-	);
-
 	const pricePair = await HourPricePair.findById(pricePairId);
 
 	const newStay = new Stay({
 		user: req.user._id,
 		place: id,
 		car: carId,
+		slot: slotId,
 		reservedFor: newDateTime,
 		fee: pricePair.price
 	});
-
-	await newStay.save();
 
 	await User.findByIdAndUpdate(
 		req.user._id,
 		{ $push: { stays: newStay._id } }
 	)
 
+
+	await newStay.save();
+
+	req.flash('success', `Booked a new reservation. Please activate it when you arrive at the parking lot`);
+	res.redirect('/me');
+}
+
+module.exports.activate = async (req, res) => {
+	const { id: lotId, stayId } = req.params;
+	const foundStay = await Stay.findById(stayId);
+
+	await Slot.findByIdAndUpdate(
+		foundStay.slot,
+		{
+			isFull: true,
+			occupierCar: foundStay.car._id
+		}
+	);
+
+	await Car.findByIdAndUpdate(
+		foundStay.car,
+		{
+			parkedIn: lotId,
+			parkedAt: Date.now()
+		}
+	);
+
+	foundStay.status = 'Active';
+	foundStay.activatedAt = Date.now();
+
+	await foundStay.save();
+
+	req.flash('success', 'Activated the reservation.');
+	res.redirect('/me');
+}
+
+module.exports.deactivate = async (req, res) => {
+	const { stayId } = req.params;
+	const foundStay = await Stay.findById(stayId);
+
+	await Slot.findByIdAndUpdate(
+		foundStay.slot,
+		{
+			isFull: false,
+			occupierCar: null
+		}
+	);
+
+	await Car.findByIdAndUpdate(
+		foundStay.car,
+		{
+			parkedIn: null,
+			parkedAt: null
+		}
+	);
+
+	foundStay.status = 'Expired';
+	foundStay.deactivatedAt = Date.now();
+
+	await foundStay.save();
+
+	req.flash('success', 'Deactivated the reservation.');
+	res.redirect('/me');
+}
+
+module.exports.delete = async (req, res) => {
+	const { stayId } = req.params;
+	const foundStay = await Stay.findById(stayId);
+
+	await User.findByIdAndUpdate(
+		foundStay.user._id,
+		{ $pull: { stays: stayId } }
+	)
+
+	await foundStay.deleteOne();
+
+	req.flash('success', 'Deleted the old reservation.');
 	res.redirect('/me');
 }

@@ -3,7 +3,6 @@
 <h1>Hi <%= user.username %></h1>
 
 <img src="<%= user.image.thumbnail %>" alt="">
-<%= console.log(user) %>
 
 <ul>
 	<li>Email: <%= user.email %></li>
@@ -17,11 +16,28 @@
 	<ul>
 		<li> <img src="<%=  stay.place.images[0].thumbnail %>" alt=""> </li>
 		<li> Car: <%= `${stay.car.brand} - ${stay.car.model}` %></li>
-		<li> Status: <%= (stay.isActive) ? 'Active' : 'Inactive' %></li>
+		<li> Status: <%= stay.status %></li>
 		<li> Fee: <%= stay.fee %> </li>
 		<li> BookedAt: <%= stay.bookedAt %> </li>
 		<li> ReservedFor: <%= stay.reservedFor %> </li>
 	</ul>
+
+	<% if (stay.status == 'Inactive') { %>
+		<form action="/parkingLots/<%= stay.place._id %>/reservation/<%= stay._id %>/activate" method="POST">
+			<button class="btn btn-success">Activate</button>
+		</form>
+
+	<% } else if (stay.status == 'Active') { %>
+		<form action="/parkingLots/<%= stay.place._id %>/reservation/<%= stay._id %>/deactivate" method="POST">
+			<button class="btn btn-warning">Finish Stay</button>
+		</form>
+
+	<% } else if (stay.status == 'Expired') { %>
+		<form action="/parkingLots/<%= stay.place._id %>/reservation/<%= stay._id %>?_method=DELETE" method="POST">
+			<button class="btn btn-danger">Delete</button>
+		</form>
+
+	<% } %>
 
 	<hr style="width: 300px;">
 <% } %>

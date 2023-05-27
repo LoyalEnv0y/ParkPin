@@ -60,11 +60,13 @@
     </form>
 <% } %>
 
-<!-- TODO: add if (currentUser) here -->
+<% if (currentUser) { %>
     <a href="/parkingLots/<%= parkingLot._id %>/reservation">
         <button class="btn btn-lg btn-primary">Make a reservation</button>
     </a>
-
+<% } else { %>
+    <p class="text-danger">Please sign in to make a reservation.</p>
+<% } %>
 
 <h4 id="reviews">Reviews:</h4>
 <% for(let review of parkingLot.reviews) { %>
