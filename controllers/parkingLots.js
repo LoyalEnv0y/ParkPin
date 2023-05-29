@@ -1,5 +1,8 @@
 // Models
 const ParkingLot = require('../models/parkingLot');
+const HourPricePair = require('../models/hourPricePair');
+const Floor = require('../models/floor');
+const Slot = require('../models/slot');
 
 // Util
 const AppError = require('../utils/AppError');
@@ -52,7 +55,9 @@ module.exports.renderShow = async (req, res) => {
 }
 
 module.exports.renderEdit = async (req, res) => {
-	const foundParkingLot = await ParkingLot.findById(req.params.id);
+	const foundParkingLot = await ParkingLot.findById(req.params.id)
+		.populate('floors')
+		.populate('priceTable');
 	const [oldCity, oldProvince] = foundParkingLot.location.split(' - ');
 
 	res.render('parkingLots/edit', {
@@ -113,6 +118,20 @@ module.exports.updateParkingLot = async (req, res) => {
 		{ new: true } // Returns the modified document
 	);
 
+	foundParkingLot.priceTable.forEach(async price => {
+		await HourPricePair.findByIdAndDelete(price._id);
+	});
+	foundParkingLot.floors.forEach(async floor => {
+		await Floor.findByIdAndDelete(floor._id);
+	});
+	foundParkingLot.priceTable = [];
+	foundParkingLot.floors = [];
+
+	foundParkingLot.floors = await floorsAndSlots
+		.createFloors(updatedLot.floors, foundParkingLot);
+	foundParkingLot.priceTable = await hourPricePairs
+		.createPrices(updatedLot.startHours, updatedLot.endHours, updatedLot.prices)
+
 	const newImages = req.files
 		.map(i => ({ url: i.path, filename: i.filename }))
 
@@ -157,7 +176,7 @@ module.exports.deleteParkingLot = async (req, res) => {
 		await cloudinary.uploader.destroy(img.filename);
 	});
 
-	await ParkingLot.deleteOne(foundParkingLot);
+	await ParkingLot.findByIdAndDelete(id);
 
 	req.flash('success', 'Successfully deleted the parking lot!');
 	res.redirect('/parkingLots');

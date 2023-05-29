@@ -52,6 +52,58 @@
                 <% }) %>
             </div>
 
+            <hr>
+
+            <h4>Floors:</h4>
+            <div class="floor-slot-area mb-5">
+                <% let i = 0; %>
+                <% for(const floor of parkingLot.floors) { %>
+                    <div class="floor-set" id="floor-<%= i %>">
+                        <label class="form-label" for="floor-input-<%= i %>"> <%= i + 1 %>. Floor:</label>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Number of Slots:</span>
+                            <input type="number" class="form-control slot-input" name="parkingLot[floors][]"
+                            id="floor-input-<%= i %>" required value="<%= floor.slots.length %>">
+
+                            <button class="btn btn-danger delete-btn" type="button" data-close="floor-<%= i %>">X</button>
+                        </div>
+                    </div>
+                    <% i++; %>
+                <% } %>
+                
+                <button type="button" class="btn btn-primary mt-3" id="add-floor-btn">Add a Floor</button>
+            </div>
+
+            <hr>
+
+            <h4>Prices:</h4>
+            <div class="price-pair-area">
+                <% let j = 0; %>
+                <% for(const price of parkingLot.priceTable) { %>
+                    <div class="price-set" id="price-<%= j %>">
+                        <label class="form-label" for="price-input-<%= j %>"> <%= j + 1 %>. Price Pair:</label>
+                    
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Starting Hour:</span>
+                            <input type="number" class="form-control price-start-input" name="parkingLot[startHours][]"
+                                id="price-input-<%= j %>" required value="<%= price.start %>">
+    
+                            <span class="input-group-text">Ending Hour:</span>
+                            <input type="number" class="form-control price-end-input" name="parkingLot[endHours][]" required value="<%= price.end %>">
+    
+                            <span class="input-group-text">Price:</span>
+                            <input type="number" class="form-control price-input" name="parkingLot[prices][]" required value="<%= price.price %>">
+    
+                            <button class="btn btn-danger delete-btn" type="button" data-close="price-<%= j %>">X</button>
+                        </div>
+                    </div>
+                    <% j++; %>
+                <% } %>
+
+                <button type="button" class="btn btn-primary mt-3" id="add-price-btn">Add a Price Pair</button>
+            </div>
+
             <div class="mb-3">
                 <button class="btn btn-primary">Update ParkingLot</button>
             </div>
@@ -62,3 +114,4 @@
 </div>
 
 <script src="/js/dynamicCitySelect.js" type="module"></script>
+<script src="/js/setFloorsAndPrices.js"></script>
