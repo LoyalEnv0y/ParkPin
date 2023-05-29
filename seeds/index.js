@@ -15,6 +15,7 @@ const User = require('../models/user');
 const ParkingLot = require('../models/parkingLot');
 const Review = require('../models/review');
 const Car = require('../models/car');
+const Stay = require('../models/stay')
 
 // Helper Functions
 const catchAsync = (fn) => {
@@ -284,9 +285,10 @@ const resetData = catchAsync(async () => {
     // Clear old User and Car data from DB 
     await User.deleteMany();
     await Car.deleteMany();
+    await Stay.deleteMany(); 
 });
 
-const massSeed = true;
+const massSeed = false;
 
 const seedDB = catchAsync(async () => {
     if (massSeed) {
@@ -299,7 +301,7 @@ const seedDB = catchAsync(async () => {
         console.log('All users have been reset.');
     }
 
-    await createParkingLots(20, 2);
+    await createParkingLots(2, 2);
     console.log('All parking lots have been reset.');
 });
 

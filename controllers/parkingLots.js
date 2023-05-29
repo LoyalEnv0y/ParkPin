@@ -90,9 +90,9 @@ module.exports.createParkingLot = async (req, res) => {
 	}
 
 	newLot.floors = await floorsAndSlots
-		.parseAndCreateFloors(parkingLot.floors, newLot);
+		.createFloors(parkingLot.floors, newLot);
 	newLot.priceTable = await hourPricePairs
-		.parseAndCreateHourPricePairs(parkingLot.priceTable, newLot)
+		.createPrices(parkingLot.startHours, parkingLot.endHours, parkingLot.prices)
 
 	await newLot.save();
 

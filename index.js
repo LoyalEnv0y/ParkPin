@@ -38,10 +38,6 @@ app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Models
-const CitiesAndProvinces = require('./seeds/CitiesAndProvinces.json');
-const CarBrandsAndModels = require('./seeds/CarBrandsAndModels.json');
-
 // Mongoose
 const mongoose = require('mongoose');
 

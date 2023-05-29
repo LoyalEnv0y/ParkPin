@@ -5,11 +5,12 @@ module.exports.parkingLotJOI = Joi.object({
 		name: Joi.string().required(),
 		city: Joi.string().required(),
 		province: Joi.string().required(),
-		// pictureLink: Joi.string().required(),
-		floors: Joi.string().regex(/^\s*\d+\s*-\s*\d+(?:,\s*\d+\s*-\s*\d+)*\s*$/),
-		priceTable: Joi.string().regex(/^\s*\d+\s*-\s*\d+\s*=\s*\d+(?:,\s*\d+\s*-\s*\d+\s*=\s*\d+)*\s*$/)
+		floors: Joi.array().items(Joi.number().min(1).max(300)).required(),
+		startHours: Joi.array().items(Joi.number().min(0)).required(),
+		endHours: Joi.array().items(Joi.number().min(1)).required(),
+		prices: Joi.array().items(Joi.number().min(0).max(1000)).required(),
 	}).required(),
-
+	
 	deleteImages: Joi.array()
 });
 
