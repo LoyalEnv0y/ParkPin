@@ -5,7 +5,7 @@ const User = require('./models/user');
 const Stay = require('./models/stay');
 
 const { parkingLotJOI, reviewJOI, userJOI, carJOI, reservationJOI } = require('./utils/JoiSchemas');
-const AppError = require('./utils/AppError');
+const AppError = require('./utils/appError');
 
 module.exports.isLoggedIn = (req, res, next) => {
 	if (!req.isAuthenticated()) {

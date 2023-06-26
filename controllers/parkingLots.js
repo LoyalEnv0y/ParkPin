@@ -5,7 +5,7 @@ const Floor = require('../models/floor');
 const Slot = require('../models/slot');
 
 // Util
-const AppError = require('../utils/AppError');
+const AppError = require('../utils/appError');
 const floorsAndSlots = require('../utils/floorsAndSlots');
 const hourPricePairs = require('../utils/hourPricePairs');
 

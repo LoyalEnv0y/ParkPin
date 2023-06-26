@@ -90,7 +90,7 @@ app.use('/data', dataRoutes);
 app.use('/parkingLots/:id/reservation', reservationRoutes);
 
 // Errors
-const AppError = require('./utils/AppError');
+const AppError = require('./utils/appError');
 
 app.all('*', (req, res, next) => {
 	next(new AppError('Page Not Found', 404));

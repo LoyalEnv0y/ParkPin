@@ -1,5 +1,5 @@
 const HourPricePair = require('../models/hourPricePair');
-const AppError = require('./AppError');
+const AppError = require('./appError');
 
 /*
 Creates new pricePairs with the given arrays. Saves the pairs and returns them.
