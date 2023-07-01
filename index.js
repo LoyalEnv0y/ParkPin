@@ -9,8 +9,15 @@ const path = require('path');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const port = process.env.PORT || 3000;
-
 const DbString = process.env.DB_URL || 'mongodb://127.0.0.1:27017/ParkPin';
+
+// Mongo Injection Protection
+const mongoSanitize = require('express-mongo-sanitize');
+app.use(
+	mongoSanitize({
+		replaceWith: '_',
+	}),
+);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -22,11 +29,11 @@ const session = require('express-session');
 
 const MongoStore = require('connect-mongo');
 const store = MongoStore.create({
-    mongoUrl: DbString,
-    touchAfter: 24 * 60 * 60,
-    crypto: {
-        secret: 'thisshouldbeabettersecret!'
-    }
+	mongoUrl: DbString,
+	touchAfter: 24 * 60 * 60,
+	crypto: {
+		secret: 'thisshouldbeabettersecret!'
+	}
 });
 
 store.on('error', err => {
@@ -90,6 +97,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.get('/', (req, res) => {
+	console.log(req.query);
 	res.render('home', { title: 'ParkPin | Home' });
 });
 
