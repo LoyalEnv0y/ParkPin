@@ -98,7 +98,6 @@ app.use((req, res, next) => {
 
 // Routes
 app.get('/', (req, res) => {
-	console.log(req.query);
 	res.render('home', { title: 'ParkPin | Home' });
 });
 
