@@ -1,4 +1,4 @@
-fetch('/data/citiesAndProvinces')
+fetch('https://parkpin-roq4.onrender.com/data/citiesAndProvinces')
     .then(data => data.json())
     .then(data => listProvinces(data))
     .catch(err => console.log('Error', err))
