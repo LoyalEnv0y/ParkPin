@@ -41,6 +41,7 @@ store.on('error', err => {
 })
 
 const sessionConfig = {
+	name: 'session',
 	store,
 	secret: process.env.SECRET_SESSION_KEY,
 	resave: false,

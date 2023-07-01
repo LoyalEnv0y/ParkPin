@@ -6,7 +6,9 @@
 			<h4 class="alert-heading">Error!</h4>
 			<p> <%= err.message %> </p>
 			<hr>
-			<p>Stack Trace: <%= err.stack %></p>
+			<% if (process.env.NODE_ENV !== 'production') { %>
+				<p>Stack Trace: <%= err.stack %></p>
+			<% } %>
 			<p class="mb-0">Error Status Code: <%= err.status %></p>
 		</div>
 	</div>
