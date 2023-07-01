@@ -40,7 +40,6 @@ const getRandNum = (ceil, floor = 0) => {
 
 // Mongoose
 const mongoose = require('mongoose');
-const DbString = process.env.DB_URL;
 
 mongoose.set('strictQuery', true);
 const main = catchAsync(async function main() {
