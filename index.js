@@ -7,16 +7,34 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const methodOverride = require('method-override');
-const session = require('express-session');
 const flash = require('connect-flash');
 const port = 3000;
+
+const DbString = process.env.DB_URL || 'mongodb://127.0.0.1:27017/ParkPin';
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
+// Session and Flash
+const session = require('express-session');
+
+const MongoStore = require('connect-mongo');
+const store = MongoStore.create({
+    mongoUrl: DbString,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: 'thisshouldbeabettersecret!'
+    }
+});
+
+store.on('error', err => {
+	console.log('Session store error => ', err);
+})
+
 const sessionConfig = {
+	store,
 	secret: process.env.SECRET_SESSION_KEY,
 	resave: false,
 	saveUninitialized: true,
@@ -40,11 +58,10 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Mongoose
 const mongoose = require('mongoose');
-const DbString = process.env.DB_URL;
 
 mongoose.set('strictQuery', true);
 async function main() {
-	await mongoose.connect("mongodb://127.0.0.1:27017/ParkPin")
+	await mongoose.connect(DbString)
 		.then(() => console.log('Mongodb connection successful'));
 }
 main().catch((err) => console.log('Mongodb connection failed', err));

@@ -40,11 +40,11 @@ const getRandNum = (ceil, floor = 0) => {
 
 // Mongoose
 const mongoose = require('mongoose');
-const DbString = process.env.DB_URL;
+const DbString = process.env.DB_URL || 'mongodb://127.0.0.1:27017/ParkPin';
 
 mongoose.set('strictQuery', true);
 const main = catchAsync(async function main() {
-    await mongoose.connect("mongodb://127.0.0.1:27017/ParkPin");
+    await mongoose.connect(DbString);
     console.log('MongoDB connection successful');
 
     await seedDB();
