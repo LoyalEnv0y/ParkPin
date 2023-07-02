@@ -57,7 +57,7 @@ floorButtons.forEach(btn => {
 
 const findFloor = async () => {
 	try {
-		const URL = `https://parkpin-roq4.onrender.com/data/findFloorById/${selectedFloorId}`;
+		const URL = `/data/findFloorById/${selectedFloorId}`;
 		const resp = await fetch(URL);
 		const floor = await resp.json();
 

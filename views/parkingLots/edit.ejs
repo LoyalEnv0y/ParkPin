@@ -41,7 +41,7 @@
 
             <div class="mb-3">
                 <% parkingLot.images.forEach((img, i) => { %>
-                    <img src="<%= img.thumbnail %>" alt="image #<%= i+1 %>" class="img-thumbnail">
+                    <img src="<%= img.thumbnail %>" alt="image #<%= i+1 %>" class="img-thumbnail" crossorigin="anonymous">
 
                     <div class="mb-3 form-check-inline">
                         <input type="checkbox" class="form-check-input" id="image-<%= i %>" name="deleteImages[]"

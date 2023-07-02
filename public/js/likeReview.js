@@ -15,7 +15,7 @@ likeButtons.forEach(button => {
 const likeReview = async (parkingLotId, userId, reviewId) => {
 	const isLiked = await checkAlreadyLiked(userId, reviewId);
 
-	const URL = `https://parkpin-roq4.onrender.com/parkingLots/${parkingLotId}/reviews/${reviewId}/like`;
+	const URL = `parkingLots/${parkingLotId}/reviews/${reviewId}/like`;
 	const reqOpts = {
 		method: 'POST',
 		headers: {
@@ -51,7 +51,7 @@ const likeReview = async (parkingLotId, userId, reviewId) => {
 }
 
 const checkAlreadyLiked = async (userId, reviewId) => {
-	const URL = `https://parkpin-roq4.onrender.com/data/reviewLikeCheck`;
+	const URL = `data/reviewLikeCheck`;
 	const reqOpts = {
 		method: 'POST',
 		headers: {

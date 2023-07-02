@@ -2,7 +2,7 @@
 
 <h1>Hi <%= user.username %></h1>
 
-<img src="<%= user.image.thumbnail %>" alt="">
+<img src="<%= user.image.thumbnail %>" alt="" crossorigin="anonymous">
 
 <ul>
 	<li>Email: <%= user.email %></li>
@@ -14,7 +14,7 @@
 
 <% for(let stay of user.stays) { %>
 	<ul>
-		<li> <img src="<%=  stay.place.images[0].thumbnail %>" alt=""> </li>
+		<li> <img src="<%=  stay.place.images[0].thumbnail %>" alt="" crossorigin="anonymous"> </li>
 		<li> Car: <%= `${stay.car.brand} - ${stay.car.model}` %></li>
 		<li> Status: <%= stay.status %></li>
 		<li> Fee: <%= stay.fee %> </li>
