@@ -1,4 +1,3 @@
-console.log("Test");
 fetch('/data/citiesAndProvinces')
     .then(data => data.json())
     .then(data => listProvinces(data))

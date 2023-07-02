@@ -55,9 +55,11 @@ const sessionConfig = {
 	}
 }
 
-const helmet = require('helmet');
 app.use(session(sessionConfig));
 app.use(flash());
+
+// Helmet
+const helmet = require('helmet');
 const scriptSrcUrls = [
 	"https://stackpath.bootstrapcdn.com/",
 	"https://api.tiles.mapbox.com/",
@@ -98,7 +100,7 @@ app.use(
 				"'self'",
 				"blob:",
 				"data:",
-				"https://res.cloudinary.com/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
+				"https://res.cloudinary.com/dlie9x7yk/",
 				"https://images.unsplash.com/"
 			],
 			fontSrc: ["'self'", ...fontSrcUrls],
