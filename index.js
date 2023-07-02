@@ -58,7 +58,11 @@ const sessionConfig = {
 const helmet = require('helmet');
 app.use(session(sessionConfig));
 app.use(flash());
-app.use(helmet());
+app.use(
+	helmet({
+		contentSecurityPolicy: false,
+	})
+);
 
 // EJS and Views
 const ejsMate = require('ejs-mate');
